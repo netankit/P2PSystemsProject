@@ -4,4 +4,4 @@
 
 Summer Semester 2015
 
-__Team Memebers__ - ankit Bahuguna and Muhammad Zeeshan
+__Team Memebers__ - Ankit Bahuguna and Muhammad Zeeshan
