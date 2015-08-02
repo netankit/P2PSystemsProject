@@ -1,5 +1,13 @@
 package voip;
 
+/**
+ * 
+ * VOIP - Main Application Console Control Panel
+ *  
+ * @author Ankit Bahuguna
+ * @email: ankit.bahuguna@cs.tum.edu	
+ *
+ */
 import java.util.Scanner;
 
 import ui.ClientUI;
