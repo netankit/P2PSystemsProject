@@ -9,6 +9,61 @@ package config;
  *
  */
 
-public class Config {
+public interface Config {
+
+	/**
+	 * @return the hostkey
+	 */
+	public String getHostkey();
+
+	/**
+	 * @param hostkey
+	 *            the hostkey to set
+	 */
+	public void setHostkey();
+
+	/**
+	 * @return the port
+	 */
+	public String[] getPort();
+
+	/**
+	 * @param port
+	 *            the port to set
+	 */
+	public void setPort();
+
+	/**
+	 * @return the hostname
+	 */
+	public String[] getHostname();
+
+	/**
+	 * @param hostname
+	 *            the hostname to set
+	 */
+	public void setHostname();
+
+	/**
+	 * @return the overlay_hostname
+	 */
+	public String[] getOverlay_hostname();
+
+	/**
+	 * @param overlay_hostname
+	 *            the overlay_hostname to set
+	 */
+	public void setOverlay_hostname();
+
+	/**
+	 * @return the hostlist
+	 */
+	public String getHostlist();
+
+	/**
+	 * @param hostlist
+	 *            the hostlist to set
+	 */
+	public void setHostlist();
 
 }
