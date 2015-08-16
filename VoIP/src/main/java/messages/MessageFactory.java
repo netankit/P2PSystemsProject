@@ -1,5 +1,6 @@
 package messages;
 
+
 /**
  * This class is the generic message class for VOIP application responsible to
  * create a message.

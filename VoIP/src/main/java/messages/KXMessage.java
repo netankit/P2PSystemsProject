@@ -10,8 +10,15 @@ package messages;
  */
 public class KXMessage implements Message {
 
-	public Message createGenericMessage(String msg) {
+	public Message createMessage(String kxMessage) {
 		// TODO Auto-generated method stub
+		if (kxMessage == null) {
+			return null;
+		}
+
+		else if (kxMessage == "MSG_KX_TN_READY") {
+			return KXMessage.createKXMessage(MessageType.MSG_KX_TN_READY);
+		}
 		return null;
 
 	}
@@ -21,8 +28,19 @@ public class KXMessage implements Message {
 		return null;
 	}
 
-	public Message createMessage(String messageType) {
+	public Message createGenericMessage(String msg) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static Message createKXMessage(MessageType messageType) {
+		// TODO Auto-generated method stub
+		if (messageType == null) {
+			return null;
+		} else if (messageType.equals(MessageType.MSG_KX_TN_READY)) {
+			System.out.println("MSG_KX_TN_READY successfully CALLED.");
+		}
+
 		return null;
 	}
 
