@@ -16,7 +16,7 @@ public interface Message {
 
 	public Message readGenericMessage(String msg);
 
-	public Message createMessage(String messageType);
+	public byte[] createMessage(String messageType);
 
 	public Message readMessage(String messageType);
 

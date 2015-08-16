@@ -1,6 +1,5 @@
 package messages;
 
-
 /**
  * This class is the generic message class for VOIP application responsible to
  * create a message.
@@ -37,7 +36,7 @@ public class MessageFactory implements Message {
 
 	}
 
-	public Message createMessage(String messageType) {
+	public byte[] createMessage(String messageType) {
 		return null;
 	};
 

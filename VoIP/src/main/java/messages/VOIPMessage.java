@@ -1,5 +1,10 @@
 package messages;
 
+import org.apache.commons.logging.Log;
+
+import logger.LogSetup;
+import ui.ClientUI;
+
 /**
  * VOIPMessageFactory : Responsible for all VOIP relevant Messages.
  *
@@ -8,6 +13,8 @@ package messages;
  *
  */
 public class VOIPMessage implements Message {
+	static LogSetup lg = new LogSetup();
+	static Log logger = lg.getLog(ClientUI.class.getName());
 
 	public Message createGenericMessage(String msg) {
 		// TODO Auto-generated method stub
@@ -26,7 +33,7 @@ public class VOIPMessage implements Message {
 	// MSG_VOIP_CALL_INITIATE_OK, MSG_VOIP_CALL_DATA, MSG_VOIP_CALL_CALL_END,
 	// MSG_VOIP_HEART_BEAT,
 	// MSG_VOIP_HEART_BEAT_REPLY
-	public Message createMessage(String messageType) {
+	public byte[] createMessage(String messageType) {
 		// TODO Auto-generated method stub
 		if (messageType == null) {
 			return null;
@@ -57,27 +64,47 @@ public class VOIPMessage implements Message {
 		return null;
 	}
 
-	public static Message createVOIPMessage(MessageType msgtype) {
+	public static byte[] createVOIPMessage(MessageType msgtype) {
+		MessagePacket mpacket = new MessagePacket();
+
 		if (msgtype == null) {
 			return null;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
-			System.out.println("MSG_VOIP_CALL_INITIATE called");
+			logger.info("MSG_VOIP_CALL_INITIATE called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_OK)) {
-			System.out.println("MSG_VOIP_CALL_OK called");
+			logger.info("MSG_VOIP_CALL_OK called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_OK);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY)) {
-			System.out.println("MSG_VOIP_CALL_BUSY called");
+			logger.info("MSG_VOIP_CALL_BUSY called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_BUSY);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
-			System.out.println("MSG_VOIP_CALL_WAITING called");
+			logger.info("MSG_VOIP_CALL_WAITING called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_WAITING);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
-			System.out.println("MSG_VOIP_CALL_INITIATE_OK called");
+			logger.info("MSG_VOIP_CALL_INITIATE_OK called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE_OK);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
-			System.out.println("MSG_VOIP_CALL_DATA called");
+			logger.info("MSG_VOIP_CALL_DATA called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_DATA);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
-			System.out.println("MSG_VOIP_CALL_CALL_END called");
+			logger.info("MSG_VOIP_CALL_CALL_END called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_CALL_END);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
-			System.out.println("MSG_VOIP_HEART_BEAT called");
+			logger.info("MSG_VOIP_HEART_BEAT called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT);
+
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
-			System.out.println("MSG_VOIP_HEART_BEAT_REPLY called");
+			logger.info("MSG_VOIP_HEART_BEAT_REPLY called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
+
 		}
 
 		return null;
