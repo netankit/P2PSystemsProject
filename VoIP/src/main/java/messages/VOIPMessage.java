@@ -1,8 +1,9 @@
 package messages;
 
+import logger.LogSetup;
+
 import org.apache.commons.logging.Log;
 
-import logger.LogSetup;
 import ui.ClientUI;
 
 /**
@@ -33,11 +34,7 @@ public class VOIPMessage implements Message {
 	// MSG_VOIP_CALL_INITIATE_OK, MSG_VOIP_CALL_DATA, MSG_VOIP_CALL_CALL_END,
 	// MSG_VOIP_HEART_BEAT,
 	// MSG_VOIP_HEART_BEAT_REPLY
-<<<<<<< HEAD
-	public Message createMessage(String messageType) {
-=======
 	public byte[] createMessage(String messageType) {
->>>>>>> upstream/master
 		// TODO Auto-generated method stub
 		if (messageType == null) {
 			return null;
@@ -68,29 +65,6 @@ public class VOIPMessage implements Message {
 		return null;
 	}
 
-<<<<<<< HEAD
-	public static Message createVOIPMessage(MessageType msgtype) {
-		if (msgtype == null) {
-			return null;
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
-			System.out.println("MSG_VOIP_CALL_INITIATE called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_OK)) {
-			System.out.println("MSG_VOIP_CALL_OK called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY)) {
-			System.out.println("MSG_VOIP_CALL_BUSY called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
-			System.out.println("MSG_VOIP_CALL_WAITING called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
-			System.out.println("MSG_VOIP_CALL_INITIATE_OK called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
-			System.out.println("MSG_VOIP_CALL_DATA called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
-			System.out.println("MSG_VOIP_CALL_CALL_END called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
-			System.out.println("MSG_VOIP_HEART_BEAT called");
-		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
-			System.out.println("MSG_VOIP_HEART_BEAT_REPLY called");
-=======
 	public static byte[] createVOIPMessage(MessageType msgtype) {
 		MessagePacket mpacket = new MessagePacket();
 
@@ -98,7 +72,8 @@ public class VOIPMessage implements Message {
 			return null;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
 			logger.info("MSG_VOIP_CALL_INITIATE called");
-			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
+			return mpacket
+					.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_OK)) {
 			logger.info("MSG_VOIP_CALL_OK called");
@@ -110,11 +85,13 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
 			logger.info("MSG_VOIP_CALL_WAITING called");
-			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_WAITING);
+			return mpacket
+					.createMessagePacket(MessageType.MSG_VOIP_CALL_WAITING);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
 			logger.info("MSG_VOIP_CALL_INITIATE_OK called");
-			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE_OK);
+			return mpacket
+					.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE_OK);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			logger.info("MSG_VOIP_CALL_DATA called");
@@ -122,7 +99,8 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
 			logger.info("MSG_VOIP_CALL_CALL_END called");
-			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_CALL_END);
+			return mpacket
+					.createMessagePacket(MessageType.MSG_VOIP_CALL_CALL_END);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
 			logger.info("MSG_VOIP_HEART_BEAT called");
@@ -130,9 +108,9 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
 			logger.info("MSG_VOIP_HEART_BEAT_REPLY called");
-			return mpacket.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
+			return mpacket
+					.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
 
->>>>>>> upstream/master
 		}
 
 		return null;

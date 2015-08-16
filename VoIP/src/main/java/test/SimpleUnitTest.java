@@ -1,28 +1,19 @@
 package test;
 
-<<<<<<< HEAD
-import java.io.IOException;
-
-import messages.Message;
-import messages.MessageFactory;
-=======
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
->>>>>>> upstream/master
+
+import messages.Message;
+import messages.MessageFactory;
+import messages.MessagePacket;
 
 import org.junit.Test;
 
 import config.ConfigReader;
-<<<<<<< HEAD
-=======
-import messages.Message;
-import messages.MessageFactory;
-import messages.MessagePacket;
->>>>>>> upstream/master
 
 /**
  * SimpleUnitTest Class has some sample tests.
@@ -39,17 +30,9 @@ public class SimpleUnitTest {
 
 		Message msgtemp = msgfac.createGenericMessage(msgType);
 
-<<<<<<< HEAD
-		Message msg = msgtemp.createMessage("DHT_TRACE");
-	}
-
-	// System.out.println(msg.toString());
-
-=======
 		byte[] msg = msgtemp.createMessage("DHT_TRACE");
 	}
 
->>>>>>> upstream/master
 	@Test
 	public void packetTest() {
 
@@ -57,13 +40,7 @@ public class SimpleUnitTest {
 		// MSG_VOIP_CALL_INITIATE
 		String size = "1234"; // 16bits
 		String messageType = ""; // 16 bits
-<<<<<<< HEAD
-
 		String pseudo_identity_calle = "";
-
-=======
-		String pseudo_identity_calle = "";
->>>>>>> upstream/master
 		String num_tries = ""; // 8 bits
 		String reserved = ""; // 24bits
 
@@ -71,11 +48,7 @@ public class SimpleUnitTest {
 		// network.
 		// function - convert string in bit format.
 		// function - padding the bits if not done.
-<<<<<<< HEAD
-		// function - regulate packet size
-=======
 		// function - regulate packet size //64KB //512000 bits
->>>>>>> upstream/master
 
 		// returns a stream of byte buffer which can be read by the server on
 		// the other side.
@@ -93,12 +66,6 @@ public class SimpleUnitTest {
 
 	@Test
 	public void configTest() throws IOException {
-<<<<<<< HEAD
-		String filename = "C:\\Users\\Ankit\\Documents\\Eclipse_Workspace\\group09\\VoIP\\config.ini";
-		ConfigReader conf = new ConfigReader(filename);
-		System.out.println(conf.getHostkey());
-	}
-=======
 		String filename = "./config.ini";
 		ConfigReader conf = new ConfigReader(filename);
 		System.out.println(conf.getHostkey());
@@ -164,7 +131,8 @@ public class SimpleUnitTest {
 		System.out.println(out);
 		final long endTime = System.currentTimeMillis();
 
-		System.out.println("Total execution time: " + (endTime - startTime) / 1000 + " seconds");
+		System.out.println("Total execution time: " + (endTime - startTime)
+				/ 1000 + " seconds");
 
 		byte[] dest = new byte[10];
 
@@ -242,8 +210,9 @@ public class SimpleUnitTest {
 	 * @return
 	 */
 	public String printByteArrayContents(byte[] src) {
-		return new String(new BigInteger(new BigInteger(src).toString(2), 2).toByteArray());
+		return new String(
+				new BigInteger(new BigInteger(src).toString(2), 2)
+						.toByteArray());
 	}
 
->>>>>>> upstream/master
 }
