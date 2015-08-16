@@ -383,6 +383,10 @@ public class MessagePacket {
 			return MessageType.MSG_VOIP_HEART_BEAT;
 		} else if (str.equalsIgnoreCase("MSG_VOIP_HEART_BEAT_REPLY")) {
 			return MessageType.MSG_VOIP_HEART_BEAT_REPLY;
+		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_START")) {
+			return MessageType.MSG_VOIP_CALL_START;
+		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_STARTED")) {
+			return MessageType.MSG_VOIP_CALL_START;
 		}
 		return null;
 	}
