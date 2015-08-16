@@ -1,9 +1,8 @@
 package messages;
 
-import logger.LogSetup;
-
 import org.apache.commons.logging.Log;
 
+import logger.LogSetup;
 import ui.ClientUI;
 
 /**
@@ -56,6 +55,10 @@ public class VOIPMessage implements Message {
 			return createVOIPMessage(MessageType.MSG_VOIP_HEART_BEAT);
 		} else if (messageType.equalsIgnoreCase("MSG_VOIP_HEART_BEAT_REPLY")) {
 			return createVOIPMessage(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
+		} else if (messageType.equalsIgnoreCase("MSG_VOIP_CALL_START")) {
+			return createVOIPMessage(MessageType.MSG_VOIP_CALL_START);
+		} else if (messageType.equalsIgnoreCase("MSG_VOIP_CALL_STARTED")) {
+			return createVOIPMessage(MessageType.MSG_VOIP_CALL_STARTED);
 		}
 		return null;
 	}
@@ -72,8 +75,7 @@ public class VOIPMessage implements Message {
 			return null;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
 			logger.info("MSG_VOIP_CALL_INITIATE called");
-			return mpacket
-					.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_OK)) {
 			logger.info("MSG_VOIP_CALL_OK called");
@@ -85,13 +87,11 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
 			logger.info("MSG_VOIP_CALL_WAITING called");
-			return mpacket
-					.createMessagePacket(MessageType.MSG_VOIP_CALL_WAITING);
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_WAITING);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
 			logger.info("MSG_VOIP_CALL_INITIATE_OK called");
-			return mpacket
-					.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE_OK);
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE_OK);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			logger.info("MSG_VOIP_CALL_DATA called");
@@ -99,8 +99,7 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
 			logger.info("MSG_VOIP_CALL_CALL_END called");
-			return mpacket
-					.createMessagePacket(MessageType.MSG_VOIP_CALL_CALL_END);
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_CALL_END);
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
 			logger.info("MSG_VOIP_HEART_BEAT called");
@@ -108,9 +107,13 @@ public class VOIPMessage implements Message {
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
 			logger.info("MSG_VOIP_HEART_BEAT_REPLY called");
-			return mpacket
-					.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
-
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_HEART_BEAT_REPLY);
+		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_START)) {
+			logger.info("MSG_VOIP_CALL_START called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_START);
+		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)) {
+			logger.info("MSG_VOIP_CALL_STARTED called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_STARTED);
 		}
 
 		return null;

@@ -189,7 +189,6 @@ public class SimpleUnitTest {
 		MessageFactory msgfac = new MessageFactory();
 		Message msgtemp = msgfac.createGenericMessage(msgType);
 		byte[] msg = msgtemp.createMessage("MSG_DHT_TRACE");
-
 		HashMap<String, byte[]> hmap = mp.readMessagePacket(msg);
 		assertEquals("AnkitKey", printByteArrayContents(hmap.get("key")));
 
