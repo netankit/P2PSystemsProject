@@ -37,7 +37,7 @@ public class MessageFactory implements Message {
 
 	}
 
-	public Message createMessage(String messageType) {
+	public byte[] createMessage(String messageType) {
 		return null;
 	};
 

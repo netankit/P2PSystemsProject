@@ -1,5 +1,10 @@
 package messages;
 
+import org.apache.commons.logging.Log;
+
+import logger.LogSetup;
+import ui.ClientUI;
+
 /**
  * 
  * KXMessageFactory: Responsible for all KX related messages.
@@ -9,8 +14,10 @@ package messages;
  *
  */
 public class KXMessage implements Message {
+	static LogSetup lg = new LogSetup();
+	static Log logger = lg.getLog(ClientUI.class.getName());
 
-	public Message createMessage(String kxMessage) {
+	public byte[] createMessage(String kxMessage) {
 		// TODO Auto-generated method stub
 		if (kxMessage == null) {
 			return null;
@@ -33,12 +40,15 @@ public class KXMessage implements Message {
 		return null;
 	}
 
-	public static Message createKXMessage(MessageType messageType) {
+	public static byte[] createKXMessage(MessageType messageType) {
+		MessagePacket mpacket = new MessagePacket();
 		// TODO Auto-generated method stub
 		if (messageType == null) {
 			return null;
 		} else if (messageType.equals(MessageType.MSG_KX_TN_READY)) {
-			System.out.println("MSG_KX_TN_READY successfully CALLED.");
+			logger.info("MSG_KX_TN_READY successfully CALLED.");
+			return mpacket.createMessagePacket(MessageType.MSG_KX_TN_READY);
+
 		}
 
 		return null;

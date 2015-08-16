@@ -1,5 +1,10 @@
 package messages;
 
+import org.apache.commons.logging.Log;
+
+import logger.LogSetup;
+import ui.ClientUI;
+
 /**
  * DHTMessageFactory: Responsible for all DHT relevant Messages.
  *
@@ -8,6 +13,8 @@ package messages;
  *
  */
 public class DHTMessage implements Message {
+	static LogSetup lg = new LogSetup();
+	static Log logger = lg.getLog(ClientUI.class.getName());
 
 	public Message createGenericMessage(String msg) {
 		// TODO Auto-generated method stub
@@ -27,7 +34,7 @@ public class DHTMessage implements Message {
 	 * @param dhtMessageType
 	 * @return Message<DHT>
 	 */
-	public Message createMessage(String dhtMessageType) {
+	public byte[] createMessage(String dhtMessageType) {
 		// TODO Auto-generated method stub
 		if (dhtMessageType == null) {
 			return null;
@@ -48,21 +55,19 @@ public class DHTMessage implements Message {
 	 * @param messageType
 	 * @return Message<DHT>
 	 */
-	private static Message createDHTMessage(MessageType messageType) {
-
+	private static byte[] createDHTMessage(MessageType messageType) {
+		MessagePacket mpacket = new MessagePacket();
 		if (messageType == null) {
 			return null;
 		} else if (messageType.equals(MessageType.DHT_TRACE)) {
-			System.out.println("DHT_TRACE Message Successfully Called!");
-			// MessagePacket dhttrace = new MessagePacket("DHT_TRACE");
-
-			return null;
+			logger.info("DHT_TRACE Message Successfully Called!");
+			return mpacket.createMessagePacket(MessageType.DHT_TRACE);
 		} else if (messageType.equals(MessageType.DHT_GET)) {
-			System.out.println("DHT_GET Message Successfully Called!");
-			return null;
+			logger.info("DHT_GET Message Successfully Called!");
+			return mpacket.createMessagePacket(MessageType.DHT_GET);
 		} else if (messageType.equals(MessageType.DHT_PUT)) {
-			System.out.println("DHT_TRACE Message Successfully Called!");
-			return null;
+			logger.info("DHT_TRACE Message Successfully Called!");
+			return mpacket.createMessagePacket(MessageType.DHT_PUT);
 		}
 		// TODO Auto-generated method stub
 		return null;
