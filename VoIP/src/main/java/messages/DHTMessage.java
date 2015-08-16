@@ -38,12 +38,12 @@ public class DHTMessage implements Message {
 		// TODO Auto-generated method stub
 		if (dhtMessageType == null) {
 			return null;
-		} else if (dhtMessageType.equalsIgnoreCase("DHT_TRACE")) {
-			return DHTMessage.createDHTMessage(MessageType.DHT_TRACE);
-		} else if (dhtMessageType.equalsIgnoreCase("DHT_GET")) {
-			return DHTMessage.createDHTMessage(MessageType.DHT_GET);
-		} else if (dhtMessageType.equalsIgnoreCase("DHT_PUT")) {
-			return DHTMessage.createDHTMessage(MessageType.DHT_PUT);
+		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_TRACE")) {
+			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_TRACE);
+		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_GET")) {
+			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_GET);
+		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_PUT")) {
+			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_PUT);
 		}
 
 		return null;
@@ -59,15 +59,15 @@ public class DHTMessage implements Message {
 		MessagePacket mpacket = new MessagePacket();
 		if (messageType == null) {
 			return null;
-		} else if (messageType.equals(MessageType.DHT_TRACE)) {
+		} else if (messageType.equals(MessageType.MSG_DHT_TRACE)) {
 			logger.info("DHT_TRACE Message Successfully Called!");
-			return mpacket.createMessagePacket(MessageType.DHT_TRACE);
-		} else if (messageType.equals(MessageType.DHT_GET)) {
+			return mpacket.createMessagePacket(MessageType.MSG_DHT_TRACE);
+		} else if (messageType.equals(MessageType.MSG_DHT_GET)) {
 			logger.info("DHT_GET Message Successfully Called!");
-			return mpacket.createMessagePacket(MessageType.DHT_GET);
-		} else if (messageType.equals(MessageType.DHT_PUT)) {
+			return mpacket.createMessagePacket(MessageType.MSG_DHT_GET);
+		} else if (messageType.equals(MessageType.MSG_DHT_PUT)) {
 			logger.info("DHT_TRACE Message Successfully Called!");
-			return mpacket.createMessagePacket(MessageType.DHT_PUT);
+			return mpacket.createMessagePacket(MessageType.MSG_DHT_PUT);
 		}
 		// TODO Auto-generated method stub
 		return null;

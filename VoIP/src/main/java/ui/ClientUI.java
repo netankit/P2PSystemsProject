@@ -1,8 +1,8 @@
 package ui;
 
-import logger.LogSetup;
-
 import org.apache.commons.logging.Log;
+
+import logger.LogSetup;
 
 /**
  *
@@ -16,8 +16,8 @@ import org.apache.commons.logging.Log;
  */
 public class ClientUI implements ClientUIInterface {
 
-	LogSetup lg = new LogSetup();
-	Log logger = lg.getLog(ClientUI.class.getName());
+	static LogSetup lg = new LogSetup();
+	static Log logger = lg.getLog(ClientUI.class.getName());
 
 	public void initiateCall() {
 		// TODO Auto-generated method stub

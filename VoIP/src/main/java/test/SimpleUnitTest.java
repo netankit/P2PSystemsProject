@@ -6,14 +6,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
-import messages.Message;
-import messages.MessageFactory;
-import messages.MessagePacket;
-
+import org.apache.commons.logging.Log;
 import org.junit.Test;
 
 import config.ConfigReader;
+import logger.LogSetup;
+import messages.Message;
+import messages.Message.MessageType;
+import messages.MessageFactory;
+import messages.MessagePacket;
+import ui.ClientUI;
 
 /**
  * SimpleUnitTest Class has some sample tests.
@@ -22,6 +27,9 @@ import config.ConfigReader;
  * @email: ankit.bahuguna@cs.tum.edu
  */
 public class SimpleUnitTest {
+	LogSetup lg = new LogSetup();
+	Log logger = lg.getLog(ClientUI.class.getName());
+
 	@Test
 	public void dhtMessageTest() {
 		String msgType = "DHT_MESSAGE";
@@ -30,7 +38,7 @@ public class SimpleUnitTest {
 
 		Message msgtemp = msgfac.createGenericMessage(msgType);
 
-		byte[] msg = msgtemp.createMessage("DHT_TRACE");
+		byte[] msg = msgtemp.createMessage("MSG_DHT_TRACE");
 	}
 
 	@Test
@@ -131,8 +139,7 @@ public class SimpleUnitTest {
 		System.out.println(out);
 		final long endTime = System.currentTimeMillis();
 
-		System.out.println("Total execution time: " + (endTime - startTime)
-				/ 1000 + " seconds");
+		System.out.println("Total execution time: " + (endTime - startTime) / 1000 + " seconds");
 
 		byte[] dest = new byte[10];
 
@@ -141,7 +148,23 @@ public class SimpleUnitTest {
 		System.arraycopy(src, 0, dest, 0, src.length);
 		System.out.println(printByteArrayContents(dest));
 		System.out.println(dest.length);
+		logger.info("Initialized");
 
+	}
+
+	@Test
+	public void checkArrayCopyRange() {
+		int[] arr = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+		int[] arr1 = Arrays.copyOfRange(arr, 0, 5);
+		System.out.println("First Part");
+		for (int i = 0; i < arr1.length; i++) {
+			System.out.print(arr1[i] + " ");
+		}
+		int[] arr2 = Arrays.copyOfRange(arr, 5, 10);
+		System.out.println("\nSecond Part");
+		for (int i = 0; i < arr2.length; i++) {
+			System.out.print(arr2[i] + " ");
+		}
 	}
 
 	@Test
@@ -151,16 +174,24 @@ public class SimpleUnitTest {
 		String msgType = "DHT_MESSAGE";
 		MessageFactory msgfac = new MessageFactory();
 		Message msgtemp = msgfac.createGenericMessage(msgType);
-		byte[] msg = msgtemp.createMessage("DHT_TRACE");
-		String result = mp.getMessagePacketType(msg);
-
-		// int[] arr = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-		// int[] arr2 = Arrays.copyOfRange(arr, 5, 10);
-		// for (int i = 0; i < arr2.length; i++) {
-		// System.out.println(arr2[i]);
-		// }
+		byte[] msg = msgtemp.createMessage("MSG_DHT_TRACE");
+		MessageType result = mp.getMessagePacketType(msg);
 		// System.out.println(result);
-		assertEquals("MSG_DHT_TRACE", result);
+		assertEquals(MessageType.MSG_DHT_TRACE, result);
+
+	}
+
+	@Test
+	public void checkMessagePacketReadAndCreate() {
+		MessagePacket mp = new MessagePacket();
+		// byte[] temp = mp.createMessagePacket(MessageType.DHT_TRACE);
+		String msgType = "DHT_MESSAGE";
+		MessageFactory msgfac = new MessageFactory();
+		Message msgtemp = msgfac.createGenericMessage(msgType);
+		byte[] msg = msgtemp.createMessage("MSG_DHT_TRACE");
+
+		HashMap<String, byte[]> hmap = mp.readMessagePacket(msg);
+		assertEquals("AnkitKey", printByteArrayContents(hmap.get("key")));
 
 	}
 
@@ -210,9 +241,7 @@ public class SimpleUnitTest {
 	 * @return
 	 */
 	public String printByteArrayContents(byte[] src) {
-		return new String(
-				new BigInteger(new BigInteger(src).toString(2), 2)
-						.toByteArray());
+		return new String(new BigInteger(new BigInteger(src).toString(2), 2).toByteArray()).trim();
 	}
 
 }
