@@ -299,6 +299,20 @@ public class MessagePacket {
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
+		} else if (msgtype.equals(MessageType.MSG_KX_TN_DESTROY)) {
+			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
+			byte[] size = getPaddedByteArray("64", 16);
+			byte[] messageType = getPaddedByteArray("MSG_VOIP_HEART_BEAT", 16);
+			byte[] ipv4_address = getPaddedByteArray("", 32);
+			byte[] pseudo_identity = getPaddedByteArray("", 32);
+			tempList.add(size);
+			tempList.add(messageType);
+			tempList.add(ipv4_address);
+			tempList.add(pseudo_identity);
+			byte[] msg = concatenateByteArrays(tempList);
+			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
+			return msg_final;
+
 		}
 
 		return null;
@@ -386,7 +400,17 @@ public class MessagePacket {
 		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_START")) {
 			return MessageType.MSG_VOIP_CALL_START;
 		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_STARTED")) {
-			return MessageType.MSG_VOIP_CALL_START;
+			return MessageType.MSG_VOIP_CALL_STARTED;
+		} else if (str.equalsIgnoreCase("MSG_DHT_GET_REPLY")) {
+			return MessageType.MSG_DHT_GET_REPLY;
+		} else if (str.equalsIgnoreCase("MSG_DHT_TRACE_REPLY")) {
+			return MessageType.MSG_DHT_TRACE_REPLY;
+		} else if (str.equalsIgnoreCase("MSG_DHT_ERROR")) {
+			return MessageType.MSG_DHT_ERROR;
+		} else if (str.equalsIgnoreCase("MSG_KX_ERROR")) {
+			return MessageType.MSG_KX_ERROR;
+		} else if (str.equalsIgnoreCase("MSG_KX_TN_DESTROY")) {
+			return MessageType.MSG_KX_TN_DESTROY;
 		}
 		return null;
 	}
@@ -530,6 +554,62 @@ public class MessagePacket {
 			msgMap.put("started_byte", getMessageBytes(mpacket, 128, 129));
 			msgMap.put("port_number_caller", getMessageBytes(mpacket, 129, 145));
 			msgMap.put("reserved", getMessageBytes(mpacket, 145, 160));
+			return msgMap;
+		}
+		// Additional REPLY and ERROR Messages
+		else if (msgtype.equals(MessageType.MSG_DHT_GET_REPLY)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("key", getMessageBytes(mpacket, 32, 64));
+			msgMap.put("dht_get_reply_content", getMessageBytes(mpacket, 64, 64000));
+			return msgMap;
+		} else if (msgtype.equals(MessageType.MSG_DHT_TRACE_REPLY)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("key", getMessageBytes(mpacket, 32, 64));
+
+			// A maximum of three hops are allowed. Nth hop first and (N-1)th
+			// hop later.
+			// Nth Hop
+			msgMap.put("peer_id_n1", getMessageBytes(mpacket, 64, 96));
+			msgMap.put("kx_port_n1", getMessageBytes(mpacket, 96, 112));
+			msgMap.put("reserved_n1", getMessageBytes(mpacket, 112, 128));
+			msgMap.put("ipv4_address_n1", getMessageBytes(mpacket, 128, 144));
+			msgMap.put("ipv6_address_n1", getMessageBytes(mpacket, 144, 160));
+			if (mpacket.length > 160) {
+				// (N-1)th hop
+				msgMap.put("peer_id_n2", getMessageBytes(mpacket, 160, 192));
+				msgMap.put("kx_port_n2", getMessageBytes(mpacket, 192, 208));
+				msgMap.put("reserved_n2", getMessageBytes(mpacket, 208, 224));
+				msgMap.put("ipv4_address_n2", getMessageBytes(mpacket, 224, 240));
+				msgMap.put("ipv6_address_n2", getMessageBytes(mpacket, 240, 256));
+				if (mpacket.length > 256) {
+					// (N-2) th hop
+					msgMap.put("peer_id_n3", getMessageBytes(mpacket, 256, 288));
+					msgMap.put("kx_port_n3", getMessageBytes(mpacket, 288, 304));
+					msgMap.put("reserved_n3", getMessageBytes(mpacket, 304, 320));
+					msgMap.put("ipv4_address_n3", getMessageBytes(mpacket, 320, 336));
+					msgMap.put("ipv6_address_n3", getMessageBytes(mpacket, 336, 352));
+					return msgMap;
+				}
+			}
+		} else if (msgtype.equals(MessageType.MSG_DHT_ERROR)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("request_type", getMessageBytes(mpacket, 32, 48));
+			msgMap.put("unused", getMessageBytes(mpacket, 48, 64));
+			msgMap.put("request_key", getMessageBytes(mpacket, 64, 96));
+			return msgMap;
+		} else if (msgtype.equals(MessageType.MSG_KX_ERROR)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("request_type", getMessageBytes(mpacket, 32, 48));
+			msgMap.put("unused", getMessageBytes(mpacket, 48, 64));
+			msgMap.put("pseudo_identity_request", getMessageBytes(mpacket, 64, 96));
 			return msgMap;
 		}
 
