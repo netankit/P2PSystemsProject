@@ -243,4 +243,8 @@ public class SimpleUnitTest {
 		return new String(new BigInteger(new BigInteger(src).toString(2), 2).toByteArray()).trim();
 	}
 
+	@Test
+	public void checkPeerIDGenration() {
+
+	}
 }
