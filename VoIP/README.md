@@ -36,11 +36,13 @@ __Team Memebers__ - Ankit Bahuguna and Muhammad Zeeshan
 Result:
 
 ```Ankits-MacBook-Pro:p2p ankit$ openssl dgst -sha256 -binary pub.der
-f?=?```
 
-32 Bytes of Peer ID = f?=?
+f?=? ```
+
+Peer ID is f?=?
 
 ```Ankits-MacBook-Pro:p2p ankopenssl dgst -sha256 -hex pub.der
+
 SHA256(pub.der)= b04b31d1e6810d4f521117434900b1feea4cb7191281d83f147b7b0d66cf3dcd ```
 
 Use the hexadecimal value while debugging since it looks pretty.
