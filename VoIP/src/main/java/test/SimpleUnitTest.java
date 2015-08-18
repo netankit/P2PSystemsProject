@@ -2,8 +2,10 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -245,6 +247,49 @@ public class SimpleUnitTest {
 
 	@Test
 	public void checkPeerIDGenration() {
+		// SimpleUnitTest sut_obj = new SimpleUnitTest();
+
+		// Tested on Mac-OSX
+		// Generates a Public/Private Key pair 4096 bit SHA encrypted. HOSTKEY =
+		// keypair.pem
+		String command1 = "openssl genrsa -out keypair.pem 4096";
+		String output1 = executeCommand(command1);
+		System.out.println(output1);
+
+		// Generates a public key part of the public/private key and stores the
+		// same in a binary format
+		String command2 = "openssl rsa -in keypair.pem -pubout -inform PEM -outform DER -out pub.der";
+		String output2 = executeCommand(command2);
+		System.out.println(output2);
+
+		// Use pub.der and extract the PEER_ID (BINARY) using the following:
+		String command3 = "openssl dgst -sha256 -binary pub.der";
+		String output3 = executeCommand(command3);
+		System.out.println("PEER ID (Binary): " + output3);
+
+		// Use pub.der and extract the PEER_ID (HEX) using the following:
+		String command4 = "openssl dgst -sha256 -hex pub.der";
+		String output4 = executeCommand(command4);
+		System.out.println("PEER ID (Hexadecimal): " + output4);
 
 	}
+
+	public String executeCommand(String command) {
+		StringBuffer output = new StringBuffer();
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			String line = "";
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return output.toString();
+
+	}
+
 }
