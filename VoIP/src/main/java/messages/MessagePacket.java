@@ -629,7 +629,7 @@ public class MessagePacket {
 		int len = src.length;
 		int diff = size - len;
 		byte[] dest = new byte[size];
-		System.out.println("Difference: " + diff);
+		// System.out.println("Difference: " + diff);
 		System.arraycopy(src, 0, dest, 0, src.length);
 		return dest;
 	}

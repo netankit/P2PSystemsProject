@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +16,9 @@ import org.apache.commons.logging.Log;
 import org.junit.Test;
 
 import config.ConfigReader;
+import crypto.IDGenerator;
+import crypto.MD5Hash;
+import crypto.PublicKeyReader;
 import logger.LogSetup;
 import messages.Message;
 import messages.Message.MessageType;
@@ -247,8 +251,6 @@ public class SimpleUnitTest {
 
 	@Test
 	public void checkPeerIDGenration() {
-		// SimpleUnitTest sut_obj = new SimpleUnitTest();
-
 		// Tested on Mac-OSX
 		// Generates a Public/Private Key pair 4096 bit SHA encrypted. HOSTKEY =
 		// keypair.pem
@@ -271,6 +273,44 @@ public class SimpleUnitTest {
 		String command4 = "openssl dgst -sha256 -hex pub.der";
 		String output4 = executeCommand(command4);
 		System.out.println("PEER ID (Hexadecimal): " + output4);
+
+	}
+
+	@Test
+	public void checkIDGenerator() throws Exception {
+		String filename = "./config.ini";
+		ConfigReader conf = new ConfigReader(filename);
+		String hostkey_file = conf.getHostkey();
+		IDGenerator peeridgen = new IDGenerator();
+		byte[] peerid_binary = peeridgen.getPeerID(hostkey_file, "binary");
+		System.out.println(printByteArrayContents(peerid_binary));
+		byte[] peerid_hexa = peeridgen.getPeerID(hostkey_file, "hexa");
+		// assertEquals("SHA256(pub.der)=8ad1faced12b743da10d3b65b97e7706332287645903d3ca9c942d077390cd81",
+		// printByteArrayContents(peerid_hexa));
+
+	}
+
+	@Test
+	public void checkKeyReaders() throws Exception {
+
+		String filename = "./config.ini";
+		ConfigReader conf = new ConfigReader(filename);
+		String hostkey_file = conf.getHostkey();
+
+		// String command2 = "openssl rsa -in " + hostkey_file + " -pubout
+		// -inform PEM -outform DER -out pub.der";
+		// String output2 = executeCommand(command2);
+
+		// PrivateKeyReader prvkeyrdr = new PrivateKeyReader();
+
+		// PrivateKey priv = prvkeyrdr.get(hostkey_file);
+
+		PublicKeyReader pubkeyrdr = new PublicKeyReader();
+		PublicKey pub = pubkeyrdr.get("pub.der");
+		byte[] tmp = pub.toString().getBytes();
+		MD5Hash md5 = new MD5Hash();
+		byte[] temp2 = md5.getSHA256HashOfData(tmp);
+		System.out.println(temp2.length);
 
 	}
 
