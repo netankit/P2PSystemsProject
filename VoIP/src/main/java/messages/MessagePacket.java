@@ -265,7 +265,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_HEART_BEAT_REPLY", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue()), 16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
 
 			tempList.add(size);
@@ -411,45 +411,45 @@ public class MessagePacket {
 	 * @return
 	 */
 	public MessageType castStringToMessageType(String str) {
-		if (str.equalsIgnoreCase("501")) {
+		if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_GET.getValue()))) {
 			return MessageType.MSG_DHT_GET;
-		} else if (str.equalsIgnoreCase("500")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_PUT.getValue()))) {
 			return MessageType.MSG_DHT_PUT;
-		} else if (str.equalsIgnoreCase("502")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_TRACE.getValue()))) {
 			return MessageType.MSG_DHT_TRACE;
-		} else if (str.equalsIgnoreCase("602")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_KX_TN_READY.getValue()))) {
 			return MessageType.MSG_KX_TN_READY;
-		} else if (str.equalsIgnoreCase("700")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_INITIATE;
-		} else if (str.equalsIgnoreCase("702")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_BUSY.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_BUSY;
-		} else if (str.equalsIgnoreCase("703")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_WAITING.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_WAITING;
-		} else if (str.equalsIgnoreCase("704")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_INITIATE_OK;
-		} else if (str.equalsIgnoreCase("705")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_DATA.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_DATA;
-		} else if (str.equalsIgnoreCase("706")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_CALL_END.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_CALL_END;
-		} else if (str.equalsIgnoreCase("707")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT.getValue()))) {
 			return MessageType.MSG_VOIP_HEART_BEAT;
-		} else if (str.equalsIgnoreCase("708")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue()))) {
 			return MessageType.MSG_VOIP_HEART_BEAT_REPLY;
-		} else if (str.equalsIgnoreCase("709")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_START.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_START;
-		} else if (str.equalsIgnoreCase("710")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_CALL_STARTED.getValue()))) {
 			return MessageType.MSG_VOIP_CALL_STARTED;
-		} else if (str.equalsIgnoreCase("503")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_GET_REPLY.getValue()))) {
 			return MessageType.MSG_DHT_GET_REPLY;
-		} else if (str.equalsIgnoreCase("504")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_TRACE_REPLY.getValue()))) {
 			return MessageType.MSG_DHT_TRACE_REPLY;
-		} else if (str.equalsIgnoreCase("505")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_DHT_ERROR.getValue()))) {
 			return MessageType.MSG_DHT_ERROR;
-		} else if (str.equalsIgnoreCase("604")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_KX_ERROR.getValue()))) {
 			return MessageType.MSG_KX_ERROR;
-		} else if (str.equalsIgnoreCase("603")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_KX_TN_DESTROY.getValue()))) {
 			return MessageType.MSG_KX_TN_DESTROY;
-		} else if (str.equalsIgnoreCase("711")) {
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_ERROR.getValue()))) {
 			return MessageType.MSG_VOIP_ERROR;
 		}
 

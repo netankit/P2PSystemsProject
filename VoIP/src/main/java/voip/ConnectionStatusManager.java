@@ -75,7 +75,7 @@ public class ConnectionStatusManager extends Thread {
 		fields.setPseudo_identity_caller(ownPseudoIdentity);
 		fields.setPseudo_identity_callee(pseudoIdentityOfOtherPeer);
 		fields.setNum_tries("1");
-		fields.setPort_number_callee(""+PeerStatusPort);
+		fields.setPort_number(""+PeerStatusPort);
 		
 		MessageFactory msgfac = new MessageFactory();
 		Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
@@ -99,16 +99,17 @@ public class ConnectionStatusManager extends Thread {
 			return Message.MessageType.MSG_VOIP_ERROR.getValue();
 		}
 		// check the replied message status
-		String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
-		if(statusMsg.equals("MSG_VOIP_CALL_INITIATE_OK"))
+		int statusMsg = CommonFunctions.ByteArrayToInt(hmap.get("messageType"));
+		
+		if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue())
 		{
 			result = Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue();
 		}
-		else if(statusMsg.equals("MSG_VOIP_CALL_BUSY"))
+		else if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_BUSY.getValue())
 		{
 			result = Message.MessageType.MSG_VOIP_CALL_BUSY.getValue();
 		}
-		else if (statusMsg.equals("MSG_VOIP_CALL_WAITING"))
+		else if (statusMsg ==  Message.MessageType.MSG_VOIP_CALL_WAITING.getValue())
 		{
 			result = Message.MessageType.MSG_VOIP_CALL_WAITING.getValue();
 		} 
@@ -191,10 +192,10 @@ public class ConnectionStatusManager extends Thread {
 			return result;
 		}
 		// check the replied message status
-		String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
+		int statusMsg = CommonFunctions.ByteArrayToInt(hmap.get("messageType"));
 		String psuedoIdentity = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity"));
 		// check the replied message status
-		if(statusMsg.equals("MSG_VOIP_HEART_BEAT_REPLY"))
+		if(statusMsg ==  Message.MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue())
 		{
 			result = 1;
 			if (status == PEER_STATUS_SESSION && pseudoIdentityOfOtherPeer != psuedoIdentity)
@@ -271,8 +272,6 @@ public class ConnectionStatusManager extends Thread {
 	{		
 		try
 		{
-			int i = 0;
-			i = i + 1;
 			// open a server TCP socket receiving the incoming call requests
 			ServerSocket ss = new ServerSocket(PeerStatusPort);
 			for(;;)
@@ -305,9 +304,9 @@ public class ConnectionStatusManager extends Thread {
 					outputStream.flush();
 				}
 				// check the replied message status
-				String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
+				int statusMsg = CommonFunctions.ByteArrayToInt(hmap.get("messageType"));
 				
-				if(statusMsg.equals("MSG_VOIP_CALL_INITIATE")) // if the message is a initiate
+				if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_INITIATE.getValue()) // if the message is a initiate
 				{
 					fields.setIpv4_address(CommonFunctions.ByteArrayToString(hmap.get("ipv4_caller")));
 					fields.setIpv4_address_ofcallee(ownIPAddress);
@@ -365,7 +364,7 @@ public class ConnectionStatusManager extends Thread {
 							break;
 					}
 				}
-				else if (statusMsg.equals("MSG_VOIP_HEART_BEAT"))
+				else if (statusMsg ==  Message.MessageType.MSG_VOIP_HEART_BEAT.getValue())
 				{
 					message = msgfac.createGenericMessage("VOIP_MESSAGE");
 					fields.setPseudo_identity(ownPseudoIdentity);
@@ -375,14 +374,14 @@ public class ConnectionStatusManager extends Thread {
 					outputStream.write(msg);
 					outputStream.flush();
 				}
-				else if(statusMsg.equals("MSG_VOIP_CALL_START")) // if the message is an incoming call request
+				else if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_START.getValue()) // if the message is an incoming call request
 				{
 					ipAddressOfOtherPeer = CommonFunctions.ByteArrayToString(hmap.get("ipv4_caller"));
 					pseudoIdentityOfOtherPeer = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity_caller"));
 					this.status = PEER_STATUS_SESSION;
 					callManager.startCall(ipAddressOfOtherPeer); // start call
 				}
-				else if(statusMsg.equals("MSG_VOIP_CALL_CALL_END"))
+				else if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_CALL_END.getValue())
 				{
 					callManager.stopCall();
 				}

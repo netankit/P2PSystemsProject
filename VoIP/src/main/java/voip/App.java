@@ -11,7 +11,6 @@ package voip;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Timer;
-
 import messages.Message;
 import config.ConfigReader;
 import ui.ClientUI;
@@ -57,7 +56,6 @@ public class App extends ClientUI {
 			return;
 		}
 
-		
 		VOIP voip = new VOIP(portNumber, dataPacketSize, IPAddress, "");
 		Timer timer = new Timer();
 		
