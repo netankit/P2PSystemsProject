@@ -35,9 +35,8 @@ public class CallManager {
 	public void stopCall()
 	{
 		// quit the session first
-		ConnectionStatusManager statusManager = new ConnectionStatusManager(this, voip.getCalleePortNumber());
-		statusManager.quitSession(IPAddress);
-		this.voip.getPeerStatus().setStatus(ConnectionStatusManager.PEER_STATUS_IDLE);
+		voip.getPeerStatus().quitSession(IPAddress);
+		voip.getPeerStatus().setStatus(ConnectionStatusManager.PEER_STATUS_IDLE);
 		audioVoiceSession.stopSession();
 	}
 }

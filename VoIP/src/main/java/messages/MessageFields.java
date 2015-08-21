@@ -13,6 +13,12 @@ package messages;
  */
 public class MessageFields {
 
+	// default constructor
+	public MessageFields()
+	{
+		
+	}
+
 	/**
 	 * @param size
 	 * @param messageType

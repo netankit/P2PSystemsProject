@@ -8,15 +8,17 @@ package voip;
  * @email: ankit.bahuguna@cs.tum.edu	
  *
  */
+import java.io.IOException;
 import java.util.Scanner;
 
+import config.ConfigReader;
 import ui.ClientUI;
 
 public class App extends ClientUI {
 
 	private static Scanner in;
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
 
 		if (args.length != 1) {
 			System.err.println("java -jar App.jar <pseudoidentity_peer>\n");
@@ -31,7 +33,21 @@ public class App extends ClientUI {
 		String pseudoidentity = args[0];
 
 		System.out.println("Pseudo-identity of Callee: " + pseudoidentity);
+		String IPAddress = "";
+		try
+		{
+			String filename = "config.ini";
+			ConfigReader conf = new ConfigReader(filename);
+			IPAddress = conf.getTUNIP();
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Error while reading the config file " + ex.getMessage());
+		}
 
+		
+		VOIP voip = new VOIP(14999, 512, IPAddress, "");
+		
 		do {
 			System.out
 					.print("\n\nVOIP CONSOLE (Type 'help' for list of commands)::>> ");
@@ -41,11 +57,13 @@ public class App extends ClientUI {
 				System.out
 						.println("Conntecting to peer with pseodo-identity ... "
 								+ pseudoidentity);
+				voip.InitiateCall(pseudoidentity, "");
 				client.initiateCall();
 			} else if (userInput.equalsIgnoreCase("end")) {
 				System.out
 						.println("Terminating the call to peer with pseodo-identity ... "
 								+ pseudoidentity);
+				voip.StopCall();
 				client.terminateCall();
 				;
 			} else if (userInput.equalsIgnoreCase("help")) {

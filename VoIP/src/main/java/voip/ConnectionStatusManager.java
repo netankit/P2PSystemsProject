@@ -2,9 +2,18 @@ package voip;
 
 import java.io.*;
 import java.net.*;
+import java.util.HashMap;
+
 import org.apache.commons.logging.Log;
+
+import common.CommonFunctions;
+
 import ui.ClientUI;
 import logger.LogSetup;
+import messages.Message;
+import messages.MessageFactory;
+import messages.MessageFields;
+import messages.MessagePacket;
 
 /**
  * Manages the call status
@@ -20,8 +29,11 @@ public class ConnectionStatusManager extends Thread {
 	// TCP port receiving calls
 	private int TimeOut = 1000;
 	private int status; // current status of peer
-	private String TunnelIPAddress; // tunnel IP Address
-	private int PeerStatusPort = 11999;
+	private String ipAddressOfOtherPeer; // tunnel IP Address
+	private int PeerStatusPort = 14999;
+	private String pseudoIdentityOfOtherPeer;
+	private String ownPseudoIdentity;
+	private String ownIPAddress; // available in config file under KX section
 	
 	public static final int PEER_STATUS_IDLE = 1;
 	public static final int PEER_STATUS_SESSION = 2;
@@ -30,15 +42,22 @@ public class ConnectionStatusManager extends Thread {
 
 	private CallManager callManager;
 	
-	public ConnectionStatusManager(CallManager callManager, int PeerStatusPort)
+	public ConnectionStatusManager(CallManager callManager, int PeerStatusPort, String ownPseudoIdentity, String ownIPAddress)
 	{
 		super(); // init the super class Thread
 		this.callManager = callManager;
 		status = PEER_STATUS_IDLE; // set idle
 		if (PeerStatusPort != 0)
 			this.PeerStatusPort = PeerStatusPort;
+		this.ownPseudoIdentity = ownPseudoIdentity;
+		this.ownIPAddress = ownIPAddress;
 	}
 
+	public void SetPseudoIdentityOfOtherPeer(String pseudoIdentityOfOtherPeer)
+	{
+		this.pseudoIdentityOfOtherPeer = pseudoIdentityOfOtherPeer;
+	}
+	
 	public int CheckStatus(String IPAddr) throws IOException
 	{
 		int result = -1;
@@ -46,39 +65,97 @@ public class ConnectionStatusManager extends Thread {
 		s.connect(new InetSocketAddress(IPAddr, PeerStatusPort), TimeOut); // connect to the peer
 		
 		// set up TCP stream reader and writer
-		BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		PrintWriter writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+		InputStream inputStream = s.getInputStream();
+		OutputStream ouputStream = s.getOutputStream();
 		
-		writer.println("MSG_VOIP_CALL_INITIATE"); // write initiate message
-		writer.flush();
-		String statusMsg = reader.readLine(); // wait and read the reply
+		// create Init message
+		MessageFields fields = new MessageFields();
+		fields.setIpv4_address(ownIPAddress);
+		fields.setIpv4_address_ofcallee(IPAddr);
+		fields.setPseudo_identity_caller(ownPseudoIdentity);
+		fields.setPseudo_identity_callee(pseudoIdentityOfOtherPeer);
+		fields.setNum_tries("1");
+		fields.setPort_number_callee(""+PeerStatusPort);
+		
+		MessageFactory msgfac = new MessageFactory();
+		Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
+		message.SetMessageFields(fields);
+		byte[] msg = message.createMessage("MSG_VOIP_CALL_INITIATE");
+		
+		ouputStream.write(msg);
+		ouputStream.flush();
+		byte[] recievedBytes = new byte[MessagePacket.PACKET_SIZE];
+		inputStream.read(recievedBytes);
+		
+		// parse message packets
+		MessagePacket packet = new MessagePacket();
+		HashMap<String, byte[]> hmap = packet.readMessagePacket(recievedBytes);
+		
+		if (hmap == null)
+		{
+			inputStream.close();
+			ouputStream.close();
+			s.close();
+			return Message.MessageType.MSG_VOIP_ERROR.getValue();
+		}
 		// check the replied message status
+		String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
 		if(statusMsg.equals("MSG_VOIP_CALL_INITIATE_OK"))
 		{
-			// populate the result variable with Message.MSG_VOIP_CALL_INITIATE_REPLY
-			// ready to call
+			result = Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue();
 		}
 		else if(statusMsg.equals("MSG_VOIP_CALL_BUSY"))
 		{
-			// busy in another call
+			result = Message.MessageType.MSG_VOIP_CALL_BUSY.getValue();
 		}
 		else if (statusMsg.equals("MSG_VOIP_CALL_WAITING"))
 		{
-			// wait for some time mentioned in the reply and then try again
+			result = Message.MessageType.MSG_VOIP_CALL_WAITING.getValue();
 		} 
 		else
 		{
-			// there is some error
+			result = Message.MessageType.MSG_VOIP_ERROR.getValue();
 		}
 		
+		// close socket
+		inputStream.close();
+		ouputStream.close();
+		s.close();
+		return result;
+	}
+
+	public int InformCalleeToInitiate(String IPAddr) throws IOException
+	{
+		int result = 1;
+		Socket s = new Socket();
+		s.connect(new InetSocketAddress(IPAddr, PeerStatusPort), TimeOut); // connect to the peer
+		
+		// set up TCP stream reader and writer
+		InputStream inputStream = s.getInputStream();
+		OutputStream outputStream = s.getOutputStream();
+		
+		MessageFields fields = new MessageFields();
+		fields.setIpv4_address(ownIPAddress);
+		fields.setIpv4_address_ofcallee(IPAddr);
+		fields.setPseudo_identity_caller(ownPseudoIdentity);
+		fields.setPseudo_identity_callee(pseudoIdentityOfOtherPeer);
+		fields.setPort_number(""+PeerStatusPort);
+		
+		MessageFactory msgfac = new MessageFactory();
+		Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
+		message.SetMessageFields(fields);
+		byte[] msg = message.createMessage("MSG_VOIP_CALL_START");
+		
+		outputStream.write(msg);
+		outputStream.flush();
 		// close streams
-		reader.close();
-		writer.close();
+		inputStream.close();
+		outputStream.close();
 		// close socket
 		s.close();
 		return result;
 	}
-	
+
 	public int ValidatePeer(String IPAddr) throws IOException
 	{
 		int result = 0;
@@ -86,21 +163,48 @@ public class ConnectionStatusManager extends Thread {
 		s.connect(new InetSocketAddress(IPAddr, PeerStatusPort), TimeOut); // connect to the peer
 		
 		// set up TCP stream reader and writer
-		BufferedReader reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-		PrintWriter writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
+		InputStream inputStream = s.getInputStream();
+		OutputStream outputStream = s.getOutputStream();
 		
-		writer.println("MSG_VOIP_HEART_BEAT"); // write initiate message
-		writer.flush();
-		String statusMsg = reader.readLine(); // wait and read the reply
+		MessageFields fields = new MessageFields();
+		MessageFactory msgfac = new MessageFactory();
+		Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
+		fields.setPseudo_identity(ownPseudoIdentity);
+		message.SetMessageFields(fields);
+
+		byte[] msg = message.createMessage("MSG_VOIP_HEART_BEAT");
+		outputStream.write(msg);
+		outputStream.flush();
+
+		byte[] recievedBytes = new byte[MessagePacket.PACKET_SIZE];
+		int recievedBytesCount = inputStream.read(recievedBytes); // wait and read the reply
+		
+		// parse message packets
+		MessagePacket packet = new MessagePacket();
+		HashMap<String, byte[]> hmap = packet.readMessagePacket(recievedBytes);
+		
+		if (hmap == null || recievedBytesCount == 0)
+		{
+			inputStream.close();
+			outputStream.close();
+			s.close();
+			return Message.MessageType.MSG_VOIP_ERROR.getValue();
+		}
+		// check the replied message status
+		String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
+		String psuedoIdentity = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity"));
 		// check the replied message status
 		if(statusMsg.equals("MSG_VOIP_HEART_BEAT_REPLY"))
 		{
-			result = 1;
+			if (status == PEER_STATUS_SESSION && pseudoIdentityOfOtherPeer != psuedoIdentity)
+			{
+				result = Message.MessageType.MSG_VOIP_ERROR.getValue();	
+			}
 		}
 		
 		// close streams
-		reader.close();
-		writer.close();
+		inputStream.close();
+		outputStream.close();
 		// close socket
 		s.close();
 		
@@ -109,14 +213,29 @@ public class ConnectionStatusManager extends Thread {
 	
 	public void quitSession(String IPAddress)
 	{
+		if (status != PEER_STATUS_SESSION)
+			return;
 		try
 		{
 			Socket s = new Socket(); // create a client socket
 			s.connect(new InetSocketAddress(IPAddress, PeerStatusPort)); // connect to the guy
-			PrintWriter writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-			writer.println("MSG_VOIP_CALL_TERMINATE");
-			writer.flush();
-			writer.close();
+			OutputStream outputStream = s.getOutputStream();
+			
+			MessageFields fields = new MessageFields();
+			MessageFactory msgfac = new MessageFactory();
+			Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
+			fields.setIpv4_address(ownIPAddress);
+			fields.setIpv4_address_ofcallee(ipAddressOfOtherPeer);
+			fields.setPseudo_identity_caller(ownPseudoIdentity);
+			fields.setPseudo_identity_callee(pseudoIdentityOfOtherPeer);
+			fields.setPort_number(""+PeerStatusPort);
+			message.SetMessageFields(fields);
+
+			byte[] msg = message.createMessage("MSG_VOIP_CALL_CALL_END");
+			
+			outputStream.write(msg);
+			outputStream.flush();
+			outputStream.close();
 			s.close();
 		}
 		catch(Exception e)
@@ -137,9 +256,9 @@ public class ConnectionStatusManager extends Thread {
 		return status;
 	}
 
-	public void setTunnelIPAddress(String IPAddress)
+	public void setTunnelIPAddressOfOtherPeer(String IPAddress)
 	{
-		TunnelIPAddress = IPAddress;
+		ipAddressOfOtherPeer = IPAddress;
 	}
 	
 	public void setPeerStatusPort(int PeerStatusPort)
@@ -151,54 +270,123 @@ public class ConnectionStatusManager extends Thread {
 	{		
 		try
 		{
+			int i = 0;
+			i = i + 1;
 			// open a server TCP socket receiving the incoming call requests
 			ServerSocket ss = new ServerSocket(PeerStatusPort);
 			for(;;)
 			{
 				Socket client = ss.accept(); // accept a connect from a peer
 				// set up read and write streams
-				BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
-				String handshakeMsg = in.readLine(); // read incoming message
-				if(handshakeMsg.equals("MSG_VOIP_CALL_INITIATE")) // if the message is a initiate
+				InputStream inputStream = client.getInputStream();
+				OutputStream outputStream = client.getOutputStream();
+				
+				byte[] recievedBytes = new byte[MessagePacket.PACKET_SIZE];
+				inputStream.read(recievedBytes);
+				
+				// parse message packets
+				MessageFields fields = new MessageFields();
+				MessageFactory msgfac = new MessageFactory();
+				Message message = null;
+				byte[] msg = null;
+
+				MessagePacket packet = new MessagePacket();
+				HashMap<String, byte[]> hmap = packet.readMessagePacket(recievedBytes);
+				if (hmap == null)
 				{
+					message = msgfac.createGenericMessage("VOIP_MESSAGE");
+					fields.setMessageType("MSG_VOIP_CALL_INITIATE");
+					fields.setPseudo_identity(ownPseudoIdentity);
+					message.SetMessageFields(fields);
+
+					msg = message.createMessage("MSG_VOIP_ERROR");
+					outputStream.write(msg);
+					outputStream.flush();
+				}
+				// check the replied message status
+				String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
+				
+				if(statusMsg.equals("MSG_VOIP_CALL_INITIATE")) // if the message is a initiate
+				{
+					fields.setIpv4_address(CommonFunctions.ByteArrayToString(hmap.get("ipv4_caller")));
+					fields.setIpv4_address_ofcallee(ownIPAddress);
+					fields.setPseudo_identity_caller(CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity_caller")));
+					fields.setPseudo_identity_callee(ownPseudoIdentity);
+					fields.setPort_number(""+PeerStatusPort);
+					
 					switch(status) // check my current status
 					{
 						case PEER_STATUS_IDLE:
-							out.println("MSG_VOIP_CALL_INITIATE_OK");
+							message = msgfac.createGenericMessage("VOIP_MESSAGE");
+							message.SetMessageFields(fields);
+							msg = message.createMessage("MSG_VOIP_CALL_INITIATE_OK");
+							
+							outputStream.write(msg);
+							outputStream.flush();
 							break;
 						case PEER_STATUS_SESSION:
-							out.println("MSG_VOIP_CALL_BUSY");
+							message = msgfac.createGenericMessage("VOIP_MESSAGE");
+							message.SetMessageFields(fields);
+							msg = message.createMessage("MSG_VOIP_CALL_BUSY");
+							
+							outputStream.write(msg);
+							outputStream.flush();
 							break;
 						case PEER_STATUS_WAITING:
-							out.println("MSG_VOIP_CALL_WAITING");
+							message = msgfac.createGenericMessage("VOIP_MESSAGE");
+							message.SetMessageFields(fields);
+							msg = message.createMessage("MSG_VOIP_CALL_WAITING");
+							
+							outputStream.write(msg);
+							outputStream.flush();
 							break;
 						case PEER_STATUS_ERROR:
-							out.println("MSG_VOIP_CALL_ERROR");
+							message = msgfac.createGenericMessage("VOIP_MESSAGE");
+							fields.setMessageType("MSG_VOIP_CALL_INITIATE");
+							fields.setPseudo_identity(ownPseudoIdentity);
+							message.SetMessageFields(fields);
+
+							msg = message.createMessage("MSG_VOIP_ERROR");
+							outputStream.write(msg);
+							outputStream.flush();
 							break;					
 						default: // unknown error
-							out.println("MSG_VOIP_CALL_ERROR");
+							message = msgfac.createGenericMessage("VOIP_MESSAGE");
+							fields.setMessageType("MSG_VOIP_CALL_INITIATE");
+							fields.setPseudo_identity(ownPseudoIdentity);
+							message.SetMessageFields(fields);
+
+							msg = message.createMessage("MSG_VOIP_ERROR");
+							outputStream.write(msg);
+							outputStream.flush();
 							logger.error("ConnectionStatusManager: Unknow Peer status");
 							System.exit(1);
 							break;
 					}
-					out.flush(); // flush out
 				}
-				else if (handshakeMsg.equals("MSG_VOIP_HEART_BEAT"))
+				else if (statusMsg.equals("MSG_VOIP_HEART_BEAT"))
 				{
-					out.println("MSG_VOIP_HEART_BEAT_REPLY");
+					message = msgfac.createGenericMessage("VOIP_MESSAGE");
+					fields.setPseudo_identity(ownPseudoIdentity);
+					message.SetMessageFields(fields);
+
+					msg = message.createMessage("MSG_VOIP_HEART_BEAT_REPLY");
+					outputStream.write(msg);
+					outputStream.flush();
 				}
-				else if(handshakeMsg.equals("MSG_VOIP_CALL_START")) // if the message is an incoming call request
+				else if(statusMsg.equals("MSG_VOIP_CALL_START")) // if the message is an incoming call request
 				{
+					ipAddressOfOtherPeer = CommonFunctions.ByteArrayToString(hmap.get("ipv4_caller"));
+					pseudoIdentityOfOtherPeer = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity_caller"));
 					this.status = PEER_STATUS_SESSION;
-					callManager.startCall(TunnelIPAddress); // start call
+					callManager.startCall(ipAddressOfOtherPeer); // start call
 				}
-				else if(handshakeMsg.equals("MSG_VOIP_CALL_TERMINATE"))
+				else if(statusMsg.equals("MSG_VOIP_CALL_CALL_END"))
 				{
 					callManager.stopCall();
 				}
-				in.close();
-				out.close();
+				inputStream.close();
+				outputStream.close();
 			}
 		}
 		catch(Exception e)

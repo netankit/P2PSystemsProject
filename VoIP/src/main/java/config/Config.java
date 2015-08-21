@@ -65,5 +65,7 @@ public interface Config {
 	 *            the hostlist to set
 	 */
 	public void setHostlist();
-
+	
+	public String getTUNIP();
+	public void setTUNIP();
 }

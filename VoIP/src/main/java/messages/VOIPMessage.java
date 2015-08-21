@@ -15,6 +15,7 @@ import ui.ClientUI;
 public class VOIPMessage implements Message {
 	static LogSetup lg = new LogSetup();
 	static Log logger = lg.getLog(ClientUI.class.getName());
+	private MessageFields fields;
 
 	public Message createGenericMessage(String msg) {
 		// TODO Auto-generated method stub
@@ -26,7 +27,11 @@ public class VOIPMessage implements Message {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public void SetMessageFields(MessageFields fields){
+		this.fields = fields;
+	}
+	
 	// VOIP Messages
 	// MSG_VOIP_CALL_INITIATE, MSG_VOIP_CALL_OK, MSG_VOIP_CALL_BUSY,
 	// MSG_VOIP_CALL_WAITING,
@@ -59,7 +64,10 @@ public class VOIPMessage implements Message {
 			return createVOIPMessage(MessageType.MSG_VOIP_CALL_START);
 		} else if (messageType.equalsIgnoreCase("MSG_VOIP_CALL_STARTED")) {
 			return createVOIPMessage(MessageType.MSG_VOIP_CALL_STARTED);
+		} else if (messageType.equalsIgnoreCase("MSG_VOIP_ERROR")) {
+			return createVOIPMessage(MessageType.MSG_VOIP_ERROR);
 		}
+		
 		return null;
 	}
 
@@ -68,12 +76,16 @@ public class VOIPMessage implements Message {
 		return null;
 	}
 
-	public static byte[] createVOIPMessage(MessageType msgtype) {
+	public byte[] createVOIPMessage(MessageType msgtype) {
 		MessagePacket mpacket = new MessagePacket();
 
 		if (msgtype == null) {
 			return null;
-		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
+		} 
+		
+		mpacket.SetMessageFields(fields);
+		
+		if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
 			logger.info("MSG_VOIP_CALL_INITIATE called");
 			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_INITIATE);
 
@@ -114,8 +126,11 @@ public class VOIPMessage implements Message {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)) {
 			logger.info("MSG_VOIP_CALL_STARTED called");
 			return mpacket.createMessagePacket(MessageType.MSG_VOIP_CALL_STARTED);
+		} else if (msgtype.equals(MessageType.MSG_VOIP_ERROR)){
+			logger.info("MSG_VOIP_ERROR called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_ERROR);
 		}
-
+			
 		return null;
 	}
 

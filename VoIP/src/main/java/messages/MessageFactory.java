@@ -50,5 +50,9 @@ public class MessageFactory implements Message {
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	public void SetMessageFields(MessageFields fields)
+	{
+		
+	}
 }

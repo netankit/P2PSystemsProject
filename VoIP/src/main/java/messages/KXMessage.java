@@ -16,7 +16,12 @@ import ui.ClientUI;
 public class KXMessage implements Message {
 	static LogSetup lg = new LogSetup();
 	static Log logger = lg.getLog(ClientUI.class.getName());
+	private MessageFields fields;
 
+	public void SetMessageFields(MessageFields fields){
+		this.fields = fields;
+	}
+	
 	public byte[] createMessage(String kxMessage) {
 		// TODO Auto-generated method stub
 		if (kxMessage == null) {
@@ -24,7 +29,7 @@ public class KXMessage implements Message {
 		}
 
 		else if (kxMessage == "MSG_KX_TN_READY") {
-			return KXMessage.createKXMessage(MessageType.MSG_KX_TN_READY);
+			return createKXMessage(MessageType.MSG_KX_TN_READY);
 		}
 		return null;
 
@@ -40,7 +45,7 @@ public class KXMessage implements Message {
 		return null;
 	}
 
-	public static byte[] createKXMessage(MessageType messageType) {
+	public byte[] createKXMessage(MessageType messageType) {
 		MessagePacket mpacket = new MessagePacket();
 		// TODO Auto-generated method stub
 		if (messageType == null) {

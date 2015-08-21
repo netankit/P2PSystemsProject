@@ -34,6 +34,7 @@ public class ConfigReader implements Config {
 		this.setHostname();
 		this.setPort();
 		this.setOverlay_hostname();
+		this.setTUNIP();
 	}
 
 	private Wini ini;
@@ -42,6 +43,7 @@ public class ConfigReader implements Config {
 	private String[] hostname;
 	private String[] overlay_hostname;
 	private String hostlist;
+	private String TUN_IP;
 	String filename = "";
 
 	public void setiniFile(String filename) throws IOException {
@@ -137,4 +139,18 @@ public class ConfigReader implements Config {
 		String hostlist = dht.get("HOSTLIST", 0);
 		this.hostlist = hostlist;
 	}
+	
+	public String getTUNIP()
+	{
+		return TUN_IP;
+	}
+	
+	public void setTUNIP()
+	{
+		Ini.Section defaultSection = ini.get("KX");
+		String tunIP = defaultSection.get("TUN_IP", 0);
+		this.TUN_IP = tunIP;
+		
+	}
+
 }

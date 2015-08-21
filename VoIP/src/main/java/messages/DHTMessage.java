@@ -15,6 +15,11 @@ import ui.ClientUI;
 public class DHTMessage implements Message {
 	static LogSetup lg = new LogSetup();
 	static Log logger = lg.getLog(ClientUI.class.getName());
+	private MessageFields fields;
+
+	public void SetMessageFields(MessageFields fields){
+		this.fields = fields;
+	}
 
 	public Message createGenericMessage(String msg) {
 		// TODO Auto-generated method stub
@@ -39,11 +44,11 @@ public class DHTMessage implements Message {
 		if (dhtMessageType == null) {
 			return null;
 		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_TRACE")) {
-			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_TRACE);
+			return createDHTMessage(MessageType.MSG_DHT_TRACE);
 		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_GET")) {
-			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_GET);
+			return createDHTMessage(MessageType.MSG_DHT_GET);
 		} else if (dhtMessageType.equalsIgnoreCase("MSG_DHT_PUT")) {
-			return DHTMessage.createDHTMessage(MessageType.MSG_DHT_PUT);
+			return createDHTMessage(MessageType.MSG_DHT_PUT);
 		}
 
 		return null;
@@ -55,7 +60,7 @@ public class DHTMessage implements Message {
 	 * @param messageType
 	 * @return Message<DHT>
 	 */
-	private static byte[] createDHTMessage(MessageType messageType) {
+	private byte[] createDHTMessage(MessageType messageType) {
 		MessagePacket mpacket = new MessagePacket();
 		if (messageType == null) {
 			return null;
