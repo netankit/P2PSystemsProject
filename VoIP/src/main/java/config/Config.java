@@ -68,4 +68,10 @@ public interface Config {
 	
 	public String getTUNIP();
 	public void setTUNIP();
+	
+	public int getVOIPPortNumber();
+	public void setVOIPPortNumber();
+	
+	public int getVoiceDataPacketSize();
+	public void setVoiceDataPacketSize();
 }

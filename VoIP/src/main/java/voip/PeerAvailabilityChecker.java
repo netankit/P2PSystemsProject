@@ -2,9 +2,12 @@ package voip;
 
 import java.io.IOException;
 import java.util.TimerTask;
+
 import org.apache.commons.logging.Log;
+
 import ui.ClientUI;
 import logger.LogSetup;
+import messages.Message;
 
 public class PeerAvailabilityChecker extends TimerTask {
 	
@@ -29,7 +32,7 @@ public class PeerAvailabilityChecker extends TimerTask {
 				for (int i = 0; i < ToleranceLevel; i++)
 				{
 					int result = status.ValidatePeer(voip.getIPAddress());
-					if (result == 1)
+					if (result != Message.MessageType.MSG_VOIP_ERROR.getValue())
 					{
 						isActive = true;
 						break;
@@ -54,6 +57,3 @@ public class PeerAvailabilityChecker extends TimerTask {
 		}
 	}
 }
-
-//Timer timer = new Timer();
-//timer.schedule(new PeerAvailabilityChecker(voip), 1000);

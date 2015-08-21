@@ -10,7 +10,9 @@ package voip;
  */
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Timer;
 
+import messages.Message;
 import config.ConfigReader;
 import ui.ClientUI;
 
@@ -20,33 +22,44 @@ public class App extends ClientUI {
 
 	public static void main(String[] args){
 
-		if (args.length != 1) {
-			System.err.println("java -jar App.jar <pseudoidentity_peer>\n");
+		if (args.length != 2) {
+			System.err.println("java -jar App.jar <Configuration file path> <pseudoidentity_peer>\n");
 			System.exit(0);
 		}
 
 		printIntro();
 		in = new Scanner(System.in);
-		ClientUI client = new ClientUI();
 		String userInput;
 
-		String pseudoidentity = args[0];
+		String configurationFilePath = args[0];
+		String pseudoidentity = args[1];
 
+		if (configurationFilePath.isEmpty() || pseudoidentity.isEmpty())
+		{
+			System.err.println("Configuration file path or pseudoidentity_peer is empty. Both are required to start application!\n");
+			return;
+		}
+		
 		System.out.println("Pseudo-identity of Callee: " + pseudoidentity);
 		String IPAddress = "";
+		int portNumber = 14999;
+		int dataPacketSize = 512;
 		try
 		{
-			String filename = "config.ini";
-			ConfigReader conf = new ConfigReader(filename);
+			ConfigReader conf = new ConfigReader(configurationFilePath);
 			IPAddress = conf.getTUNIP();
+			portNumber = conf.getVOIPPortNumber();
+			dataPacketSize = conf.getVoiceDataPacketSize();
 		}
 		catch(Exception ex)
 		{
 			System.out.println("Error while reading the config file " + ex.getMessage());
+			return;
 		}
 
 		
-		VOIP voip = new VOIP(14999, 512, IPAddress, "");
+		VOIP voip = new VOIP(portNumber, dataPacketSize, IPAddress, "");
+		Timer timer = new Timer();
 		
 		do {
 			System.out
@@ -57,14 +70,35 @@ public class App extends ClientUI {
 				System.out
 						.println("Conntecting to peer with pseodo-identity ... "
 								+ pseudoidentity);
-				voip.InitiateCall(pseudoidentity, "");
-				client.initiateCall();
+				int result = voip.InitiateCall(pseudoidentity, "");
+				if (result == Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue())
+				{
+					// send heart beat messages after 100 Sec
+					timer.schedule(new PeerAvailabilityChecker(voip), 100000);
+					System.out.println("Call initiated with " + pseudoidentity);
+				} 
+				else if (result == Message.MessageType.MSG_VOIP_CALL_BUSY.getValue())
+				{
+					System.out.println("Calleee " + pseudoidentity + " is busy at the moment in another call");
+				}
+				else if (result == Message.MessageType.MSG_VOIP_CALL_WAITING.getValue())
+				{
+					System.out.println("Calleee " + pseudoidentity + " is in waiting state. Try bit later!");
+				}
+				else
+				{
+					System.out.println("There is some error during the call with " + pseudoidentity + " . Look at the log file for details.");
+				}
+				
 			} else if (userInput.equalsIgnoreCase("end")) {
 				System.out
 						.println("Terminating the call to peer with pseodo-identity ... "
 								+ pseudoidentity);
 				voip.StopCall();
-				client.terminateCall();
+				timer.cancel();
+				System.out
+				.println("Call terminated with pseodo-identity ... "
+						+ pseudoidentity);
 				;
 			} else if (userInput.equalsIgnoreCase("help")) {
 				printUsageHelp();

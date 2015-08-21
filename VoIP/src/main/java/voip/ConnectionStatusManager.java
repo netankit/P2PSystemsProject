@@ -158,7 +158,7 @@ public class ConnectionStatusManager extends Thread {
 
 	public int ValidatePeer(String IPAddr) throws IOException
 	{
-		int result = 0;
+		int result = Message.MessageType.MSG_VOIP_ERROR.getValue();
 		Socket s = new Socket();
 		s.connect(new InetSocketAddress(IPAddr, PeerStatusPort), TimeOut); // connect to the peer
 		
@@ -188,7 +188,7 @@ public class ConnectionStatusManager extends Thread {
 			inputStream.close();
 			outputStream.close();
 			s.close();
-			return Message.MessageType.MSG_VOIP_ERROR.getValue();
+			return result;
 		}
 		// check the replied message status
 		String statusMsg = CommonFunctions.ByteArrayToString(hmap.get("messageType"));
@@ -196,6 +196,7 @@ public class ConnectionStatusManager extends Thread {
 		// check the replied message status
 		if(statusMsg.equals("MSG_VOIP_HEART_BEAT_REPLY"))
 		{
+			result = 1;
 			if (status == PEER_STATUS_SESSION && pseudoIdentityOfOtherPeer != psuedoIdentity)
 			{
 				result = Message.MessageType.MSG_VOIP_ERROR.getValue();	

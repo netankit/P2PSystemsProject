@@ -35,6 +35,8 @@ public class ConfigReader implements Config {
 		this.setPort();
 		this.setOverlay_hostname();
 		this.setTUNIP();
+		this.setVoiceDataPacketSize();
+		this.setVOIPPortNumber();
 	}
 
 	private Wini ini;
@@ -44,6 +46,8 @@ public class ConfigReader implements Config {
 	private String[] overlay_hostname;
 	private String hostlist;
 	private String TUN_IP;
+	private String voipPortNumber;
+	private String voiceDataPacketSize;
 	String filename = "";
 
 	public void setiniFile(String filename) throws IOException {
@@ -153,4 +157,27 @@ public class ConfigReader implements Config {
 		
 	}
 
+	public int getVOIPPortNumber()
+	{
+		return Integer.parseInt(voipPortNumber);
+	}
+	
+	public void setVOIPPortNumber()
+	{
+		Ini.Section defaultSection = ini.get("VOIP");
+		String voipPortNumber = defaultSection.get("VOIP_Port", 0);
+		this.voipPortNumber = voipPortNumber;
+	}
+	
+	public int getVoiceDataPacketSize()
+	{
+		return Integer.parseInt(voiceDataPacketSize);
+	}
+	
+	public void setVoiceDataPacketSize()
+	{
+		Ini.Section defaultSection = ini.get("VOIP");
+		String voiceDataPacketSize = defaultSection.get("VoiceDataPacketSize", 0);
+		this.voiceDataPacketSize = voiceDataPacketSize;
+	}
 }
