@@ -33,7 +33,7 @@ public class MessagePacket {
 	public static final int PACKET_SIZE = 64000;
 	private MessageFields fields;
 
-	public void SetMessageFields(MessageFields fields){
+	public void SetMessageFields(MessageFields fields) {
 		this.fields = fields;
 	}
 
@@ -45,7 +45,7 @@ public class MessagePacket {
 		if (msgtype.equals(MessageType.MSG_DHT_GET)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_DHT_GET", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_DHT_GET.getValue()), 16);
 			byte[] key = getPaddedByteArray("AnkitKey", 32);
 			tempList.add(size);
 			tempList.add(messageType);
@@ -57,7 +57,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_DHT_PUT)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_DHT_PUT", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_DHT_PUT.getValue()), 16);
 			byte[] key = getPaddedByteArray("", 32);
 			byte[] ttl = getPaddedByteArray("", 16);
 			byte[] replication = getPaddedByteArray("", 8);
@@ -80,7 +80,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_DHT_TRACE)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_DHT_TRACE", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_DHT_TRACE.getValue()), 16);
 			byte[] key = getPaddedByteArray("AnkitKey", 32);
 			tempList.add(size);
 			tempList.add(messageType);
@@ -92,7 +92,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_KX_TN_READY)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_KX_TN_READY", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_KX_TN_READY.getValue()), 16);
 			byte[] pseudo_identity = getPaddedByteArray("", 32);
 			byte[] reserved = getPaddedByteArray("", 32);
 			byte[] ipv4_address = getPaddedByteArray("", 32);
@@ -110,7 +110,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_INITIATE", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
@@ -118,7 +118,7 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] num_tries = getPaddedByteArray(fields.getNum_tries(), 8);
 			byte[] reserved = getPaddedByteArray("", 8);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -135,14 +135,15 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_INITIATE_OK", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue()),
+					16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -158,14 +159,14 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_BUSY", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_BUSY.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -180,14 +181,14 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_WAITING", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_WAITING.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -196,7 +197,7 @@ public class MessagePacket {
 			tempList.add(pseudo_identity_callee);
 			tempList.add(port_number);
 			tempList.add(reserved);
-			
+
 			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
@@ -204,7 +205,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_DATA", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_DATA.getValue()), 16);
 			byte[] ipv4_address = getPaddedByteArray("", 32);
 			byte[] pseudo_identity = getPaddedByteArray("", 32);
 
@@ -228,14 +229,14 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_CALL_END", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_CALL_END.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -244,7 +245,7 @@ public class MessagePacket {
 			tempList.add(pseudo_identity_callee);
 			tempList.add(port_number);
 			tempList.add(reserved);
-			
+
 			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
@@ -252,7 +253,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_HEART_BEAT", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT.getValue()), 16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
 			tempList.add(size);
 			tempList.add(messageType);
@@ -266,25 +267,25 @@ public class MessagePacket {
 			byte[] size = getPaddedByteArray("64", 16);
 			byte[] messageType = getPaddedByteArray("MSG_VOIP_HEART_BEAT_REPLY", 16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(pseudo_identity);
-			
+
 			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_START)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_START", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_START.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -301,7 +302,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_CALL_STARTED", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_STARTED.getValue()), 16);
 			byte[] ipv4_address_bykx = getPaddedByteArray("", 32);
 			byte[] ipv4_address_ofcallee = getPaddedByteArray("", 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray("", 32);
@@ -323,7 +324,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_KX_TN_DESTROY)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_KX_TN_DESTROY", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_KX_TN_DESTROY.getValue()), 16);
 			byte[] ipv4_address = getPaddedByteArray("", 32);
 			byte[] pseudo_identity = getPaddedByteArray("", 32);
 			tempList.add(size);
@@ -337,11 +338,11 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_ERROR)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray("MSG_VOIP_ERROR", 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_ERROR.getValue()), 16);
 			byte[] request_type = getPaddedByteArray(fields.getMessageType(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 			byte[] pseudo_identity_request = getPaddedByteArray(fields.getPseudo_identity(), 32);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(request_type);
@@ -410,48 +411,48 @@ public class MessagePacket {
 	 * @return
 	 */
 	public MessageType castStringToMessageType(String str) {
-		if (str.equalsIgnoreCase("MSG_DHT_GET")) {
+		if (str.equalsIgnoreCase("501")) {
 			return MessageType.MSG_DHT_GET;
-		} else if (str.equalsIgnoreCase("MSG_DHT_PUT")) {
+		} else if (str.equalsIgnoreCase("500")) {
 			return MessageType.MSG_DHT_PUT;
-		} else if (str.equalsIgnoreCase("MSG_DHT_TRACE")) {
+		} else if (str.equalsIgnoreCase("502")) {
 			return MessageType.MSG_DHT_TRACE;
-		} else if (str.equalsIgnoreCase("MSG_KX_TN_READY")) {
+		} else if (str.equalsIgnoreCase("602")) {
 			return MessageType.MSG_KX_TN_READY;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_INITIATE")) {
+		} else if (str.equalsIgnoreCase("700")) {
 			return MessageType.MSG_VOIP_CALL_INITIATE;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_BUSY")) {
+		} else if (str.equalsIgnoreCase("702")) {
 			return MessageType.MSG_VOIP_CALL_BUSY;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_WAITING")) {
+		} else if (str.equalsIgnoreCase("703")) {
 			return MessageType.MSG_VOIP_CALL_WAITING;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_INITIATE_OK")) {
+		} else if (str.equalsIgnoreCase("704")) {
 			return MessageType.MSG_VOIP_CALL_INITIATE_OK;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_DATA")) {
+		} else if (str.equalsIgnoreCase("705")) {
 			return MessageType.MSG_VOIP_CALL_DATA;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_CALL_END")) {
+		} else if (str.equalsIgnoreCase("706")) {
 			return MessageType.MSG_VOIP_CALL_CALL_END;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_HEART_BEAT")) {
+		} else if (str.equalsIgnoreCase("707")) {
 			return MessageType.MSG_VOIP_HEART_BEAT;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_HEART_BEAT_REPLY")) {
+		} else if (str.equalsIgnoreCase("708")) {
 			return MessageType.MSG_VOIP_HEART_BEAT_REPLY;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_START")) {
+		} else if (str.equalsIgnoreCase("709")) {
 			return MessageType.MSG_VOIP_CALL_START;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_CALL_STARTED")) {
+		} else if (str.equalsIgnoreCase("710")) {
 			return MessageType.MSG_VOIP_CALL_STARTED;
-		} else if (str.equalsIgnoreCase("MSG_DHT_GET_REPLY")) {
+		} else if (str.equalsIgnoreCase("503")) {
 			return MessageType.MSG_DHT_GET_REPLY;
-		} else if (str.equalsIgnoreCase("MSG_DHT_TRACE_REPLY")) {
+		} else if (str.equalsIgnoreCase("504")) {
 			return MessageType.MSG_DHT_TRACE_REPLY;
-		} else if (str.equalsIgnoreCase("MSG_DHT_ERROR")) {
+		} else if (str.equalsIgnoreCase("505")) {
 			return MessageType.MSG_DHT_ERROR;
-		} else if (str.equalsIgnoreCase("MSG_KX_ERROR")) {
+		} else if (str.equalsIgnoreCase("604")) {
 			return MessageType.MSG_KX_ERROR;
-		} else if (str.equalsIgnoreCase("MSG_KX_TN_DESTROY")) {
+		} else if (str.equalsIgnoreCase("603")) {
 			return MessageType.MSG_KX_TN_DESTROY;
-		} else if (str.equalsIgnoreCase("MSG_VOIP_ERROR")) {
+		} else if (str.equalsIgnoreCase("711")) {
 			return MessageType.MSG_VOIP_ERROR;
 		}
-		
+
 		return null;
 	}
 
@@ -463,10 +464,10 @@ public class MessagePacket {
 	 * @return
 	 */
 	public HashMap<String, byte[]> readMessagePacket(byte[] mpacket) {
-		
+
 		if (mpacket.length == 0)
 			return null;
-		
+
 		MessageType msgtype = getMessagePacketType(mpacket);
 
 		if (msgtype.equals(MessageType.MSG_DHT_GET)) {
@@ -512,7 +513,7 @@ public class MessagePacket {
 			msgMap.put("num_tries", getMessageBytes(mpacket, 160, 168));
 			msgMap.put("port_number", getMessageBytes(mpacket, 168, 184));
 			msgMap.put("reserved", getMessageBytes(mpacket, 184, 192));
-			
+
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
@@ -524,7 +525,7 @@ public class MessagePacket {
 			msgMap.put("pseudo_identity_callee", getMessageBytes(mpacket, 128, 160));
 			msgMap.put("port_number", getMessageBytes(mpacket, 160, 176));
 			msgMap.put("reserved", getMessageBytes(mpacket, 176, 192));
-						
+
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
@@ -536,7 +537,7 @@ public class MessagePacket {
 			msgMap.put("pseudo_identity_callee", getMessageBytes(mpacket, 128, 160));
 			msgMap.put("port_number", getMessageBytes(mpacket, 160, 176));
 			msgMap.put("reserved", getMessageBytes(mpacket, 176, 192));
-			
+
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
@@ -548,7 +549,7 @@ public class MessagePacket {
 			msgMap.put("pseudo_identity_callee", getMessageBytes(mpacket, 128, 160));
 			msgMap.put("port_number", getMessageBytes(mpacket, 160, 176));
 			msgMap.put("reserved", getMessageBytes(mpacket, 176, 192));
-			
+
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
@@ -593,7 +594,7 @@ public class MessagePacket {
 			msgMap.put("pseudo_identity_callee", getMessageBytes(mpacket, 128, 160));
 			msgMap.put("port_number", getMessageBytes(mpacket, 160, 176));
 			msgMap.put("reserved", getMessageBytes(mpacket, 176, 192));
-			
+
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
@@ -671,7 +672,7 @@ public class MessagePacket {
 			msgMap.put("pseudo_identity_request", getMessageBytes(mpacket, 64, 96));
 			return msgMap;
 		}
-		
+
 		return null;
 	}
 

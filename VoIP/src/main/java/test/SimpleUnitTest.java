@@ -332,4 +332,9 @@ public class SimpleUnitTest {
 
 	}
 
+	@Test
+	public void checkEnumMessageValue() {
+		assertEquals("501", String.valueOf(MessageType.MSG_DHT_GET.getValue()));
+	}
+
 }
