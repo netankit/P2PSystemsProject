@@ -210,14 +210,14 @@ public class MessagePacket {
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
 			byte[] pseudo_identity_caller = getPaddedByteArray(fields.getPseudo_identity_caller(), 32);
 			byte[] pseudo_identity_callee = getPaddedByteArray(fields.getPseudo_identity_callee(), 32);
-			
-			byte[] audio_data = new byte[1024];  // 16 kilobyte
+
+			byte[] audio_data = new byte[1024]; // 16 kilobyte
 			System.arraycopy(fields.getAudio_data(), 0, audio_data, 0, fields.getAudio_data().length);
-			byte[] hashMD5 = new byte[16]; 
+			byte[] hashMD5 = new byte[16];
 			System.arraycopy(fields.getHashMD5(), 0, hashMD5, 0, fields.getHashMD5().length);
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(ipv4_caller);
@@ -271,7 +271,8 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray("64", 16);
-			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue()), 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue()),
+					16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
 
 			tempList.add(size);
@@ -558,7 +559,7 @@ public class MessagePacket {
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
-			
+
 			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
 			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
 			msgMap.put("ipv4_caller", getMessageBytes(mpacket, 32, 64));
@@ -638,22 +639,22 @@ public class MessagePacket {
 			msgMap.put("reserved_n1", getMessageBytes(mpacket, 112, 128));
 			msgMap.put("ipv4_address_n1", getMessageBytes(mpacket, 128, 144));
 			msgMap.put("ipv6_address_n1", getMessageBytes(mpacket, 144, 160));
-			if (mpacket.length > 160) {
+			if (mpacket.length > 160 & mpacket.length <= 256) {
 				// (N-1)th hop
 				msgMap.put("peer_id_n2", getMessageBytes(mpacket, 160, 192));
 				msgMap.put("kx_port_n2", getMessageBytes(mpacket, 192, 208));
 				msgMap.put("reserved_n2", getMessageBytes(mpacket, 208, 224));
 				msgMap.put("ipv4_address_n2", getMessageBytes(mpacket, 224, 240));
 				msgMap.put("ipv6_address_n2", getMessageBytes(mpacket, 240, 256));
-				if (mpacket.length > 256) {
-					// (N-2) th hop
-					msgMap.put("peer_id_n3", getMessageBytes(mpacket, 256, 288));
-					msgMap.put("kx_port_n3", getMessageBytes(mpacket, 288, 304));
-					msgMap.put("reserved_n3", getMessageBytes(mpacket, 304, 320));
-					msgMap.put("ipv4_address_n3", getMessageBytes(mpacket, 320, 336));
-					msgMap.put("ipv6_address_n3", getMessageBytes(mpacket, 336, 352));
-					return msgMap;
-				}
+			}
+			if (mpacket.length > 256) {
+				// (N-2) th hop
+				msgMap.put("peer_id_n3", getMessageBytes(mpacket, 256, 288));
+				msgMap.put("kx_port_n3", getMessageBytes(mpacket, 288, 304));
+				msgMap.put("reserved_n3", getMessageBytes(mpacket, 304, 320));
+				msgMap.put("ipv4_address_n3", getMessageBytes(mpacket, 320, 336));
+				msgMap.put("ipv6_address_n3", getMessageBytes(mpacket, 336, 352));
+				return msgMap;
 			}
 		} else if (msgtype.equals(MessageType.MSG_DHT_ERROR)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();

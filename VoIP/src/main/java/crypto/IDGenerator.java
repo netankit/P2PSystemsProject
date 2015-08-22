@@ -40,7 +40,7 @@ public class IDGenerator {
 			MD5Hash md5 = new MD5Hash();
 			peerid = md5.getSHA256HashOfData(tmp);
 			// System.out.println("PEER ID (Binary): " + peerid.toString());
-			return peerid;
+			// return peerid;
 		} else if (representation == "hexa") {
 			// Use pub.der and extract the PEER_ID (Hexa-Decimal) -- Only for
 			// Debugging Purposes.
@@ -51,7 +51,7 @@ public class IDGenerator {
 			peerid = md5.ConvertByteArrayToHexString(md5.getSHA256HashOfData(tmp)).getBytes();
 			// System.out.println("PEER ID (Hexadecimal): " +
 			// peerid.toString());
-			return peerid;
+			// return peerid;
 		}
 		return peerid;
 	}
