@@ -1,9 +1,13 @@
 package datacontrol;
 
 import java.util.concurrent.*;
+
 import javax.sound.sampled.AudioFormat;
+
 import org.apache.commons.logging.Log;
+
 import ui.ClientUI;
+import voip.VOIP;
 import logger.LogSetup;
 
 
@@ -39,13 +43,15 @@ public class AudioSession {
 	private RTPReciever Receiver;
 	private RTPSender Sender;
 	private SenderThread SendThread;
+	private VOIP voip;
 	
-	public AudioSession(int dataBlockSize, int recievePort)
+	public AudioSession(VOIP voip)
 	{
-		if (dataBlockSize > 0)
-			DataBlockSize = dataBlockSize;
-		if (recievePort != 0)
-			RecieverPort = recievePort; 
+		this.voip = voip;
+		if (this.voip.getDataPacketSize() > 0)
+			DataBlockSize = voip.getDataPacketSize();
+		if (this.voip.getCalleePortNumber() != 0)
+			RecieverPort = this.voip.getCalleePortNumber(); 
 		
 		audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, true);
 		CarrierQueueForSender = new ArrayBlockingQueue(QueueCapacity);
@@ -79,8 +85,8 @@ public class AudioSession {
 		// set up connections
 		Recorder = new AudioRecord(audioFormat, CarrierQueueForSender, ReturnQueueForSender);		
 		Player = new AudioPlayer(audioFormat, CarrierQueueForReceiver, ReturnQueueForReceiver);
-		Receiver = new RTPReciever(RecieverPort, CarrierQueueForReceiver, ReturnQueueForReceiver);
-		Sender = new RTPSender(participantIPAddress, RecieverPort);
+		Receiver = new RTPReciever(voip, RecieverPort, CarrierQueueForReceiver, ReturnQueueForReceiver);
+		Sender = new RTPSender(voip, participantIPAddress, RecieverPort);
 		SendThread = new SenderThread(Sender, CarrierQueueForSender, ReturnQueueForSender);
 	}
 	
@@ -100,5 +106,10 @@ public class AudioSession {
 		// stop the receiver and player
 		Receiver.stopReceiver();
 		Player.stopPlaying();
+	}
+	
+	public VOIP getVOIP()
+	{
+		return voip;
 	}
 }

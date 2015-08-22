@@ -63,6 +63,16 @@ public class ConnectionStatusManager extends Thread {
 		this.pseudoIdentityOfOtherPeer = pseudoIdentityOfOtherPeer;
 	}
 	
+	public String GetOwnPseudoIdentity()
+	{
+		return this.ownPseudoIdentity;
+	}
+	
+	public String GetPseudoIdentityOfOtherPeer()
+	{
+		return this.pseudoIdentityOfOtherPeer;
+	}
+	
 	public int CheckStatus(String IPAddr) throws IOException
 	{
 		int result = -1;
@@ -269,6 +279,11 @@ public class ConnectionStatusManager extends Thread {
 		ipAddressOfOtherPeer = IPAddress;
 	}
 	
+	public String getOwnIPAddress()
+	{
+		return ownIPAddress;
+	}
+	
 	public String getIPAddressOfOtherPeer()
 	{
 		return ipAddressOfOtherPeer;
@@ -277,6 +292,11 @@ public class ConnectionStatusManager extends Thread {
 	public void setPeerStatusPort(int PeerStatusPort)
 	{
 		this.PeerStatusPort = PeerStatusPort;
+	}
+	
+	public int GetPeerStatusPort()
+	{
+		return this.PeerStatusPort;
 	}
 
 	public void run()

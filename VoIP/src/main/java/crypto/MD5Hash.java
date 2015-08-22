@@ -54,6 +54,6 @@ public class MD5Hash {
 		String dataInHex = ConvertByteArrayToHexString(data);
 		String MD5HashInHex = ConvertByteArrayToHexString(MD5Hash);
 
-		return dataInHex == MD5HashInHex;
+		return dataInHex.compareToIgnoreCase(MD5HashInHex) == 0;
 	}
 }

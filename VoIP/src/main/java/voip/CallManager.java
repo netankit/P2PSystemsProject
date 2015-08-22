@@ -21,7 +21,8 @@ public class CallManager {
 	public CallManager(VOIP voip)
 	{
 		this.voip = voip;
-		audioVoiceSession = new AudioSession(this.voip.getDataPacketSize(), this.voip.getCalleePortNumber());
+		//audioVoiceSession = new AudioSession(this.voip.getDataPacketSize(), this.voip.getCalleePortNumber());
+		audioVoiceSession = new AudioSession(voip);
 	}	
 	
 	public void StopCall()
@@ -35,8 +36,8 @@ public class CallManager {
 		audioVoiceSession.initSession(IPAddress);
 		audioVoiceSession.startSession();
 		timer = new Timer();
-		// send heart beat messages after 30 Sec
-		timer.schedule(new PeerAvailabilityChecker(voip.getPeerStatus()), 0, 30000);
+		// send heart beat messages after 10 Sec
+		timer.schedule(new PeerAvailabilityChecker(voip.getPeerStatus()), 0, 10000);
 	}
 	
 	public void stopCall()

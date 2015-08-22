@@ -2,10 +2,20 @@ package datacontrol;
 
 
 import java.net.*;
+
 import jlibrtp.*;
+
 import org.apache.commons.logging.Log;
+
+import crypto.MD5Hash;
+import crypto.SessionKeyEstablishment;
 import ui.ClientUI;
+import voip.ConnectionStatusManager;
+import voip.VOIP;
 import logger.LogSetup;
+import messages.Message;
+import messages.MessageFactory;
+import messages.MessageFields;
 
 /**
  * Sends out audio data to Sender
@@ -19,9 +29,11 @@ public class RTPSender implements RTPAppIntf {
 	
 	private RTPSession RTPSession;
 	private int ReceiverRtpPort; // UDP port used for RTP communication
+	private VOIP voip;
 
-	public RTPSender(String receiverIPAddr, int receiverRTPport)
+	public RTPSender(VOIP voip, String receiverIPAddr, int receiverRTPport)
 	{
+		this.voip = voip;
 		ReceiverRtpPort = receiverRTPport;
 		int ReceiverRtcpPort = ReceiverRtpPort + 1;
 
@@ -65,8 +77,22 @@ public class RTPSender implements RTPAppIntf {
 
 	public void sendData(byte data[])
 	{
-		// here we have to put the audio data in message.
-		RTPSession.sendData(data);
+		MessageFields fields = new MessageFields();
+		MessageFactory msgfac = new MessageFactory();
+		ConnectionStatusManager status = voip.getPeerStatus();
+		MD5Hash md5Hash = new MD5Hash();
+		Message message = msgfac.createGenericMessage("VOIP_MESSAGE");
+		fields.setIpv4_address(status.getOwnIPAddress());
+		fields.setIpv4_address_ofcallee(status.getIPAddressOfOtherPeer());
+		fields.setPseudo_identity_caller(status.GetOwnPseudoIdentity());
+		fields.setPseudo_identity_callee(status.GetPseudoIdentityOfOtherPeer());
+		fields.setAudio_data(data);
+		fields.setHashMD5(md5Hash.getMD5HashOfData(data));
+		fields.setPort_number(String.valueOf(status.GetPeerStatusPort()));
+		message.SetMessageFields(fields);
+		byte[] msg = message.createMessage("MSG_VOIP_CALL_DATA");
+
+		RTPSession.sendData(msg);
 	}
 
 	public void close()

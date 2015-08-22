@@ -48,7 +48,7 @@ public class MessageFields {
 	public MessageFields(String size, String messageType, String key, String ttl, String replication, String reserved,
 			String reserveda, String reservedb, byte[] content, String pseudo_identity, String ipv4_address,
 			String ipv6_address, String pseudo_identity_callee, String num_tries, String port_number, byte[] audio_data,
-			String hashMD5, String ok_byte, String ipv4_address_bykx, String ipv4_address_ofcallee,
+			byte[] hashMD5, String ok_byte, String ipv4_address_bykx, String ipv4_address_ofcallee,
 			String port_number_callee, String port_number_caller, String started_byte, String pseudo_identity_caller) {
 
 		// Either initialize like this or the other given below using the
@@ -126,7 +126,7 @@ public class MessageFields {
 	private String num_tries;
 	private String port_number;
 	private byte[] audio_data;
-	private String hashMD5;
+	private byte[] hashMD5;
 	private String ok_byte;
 	private String ipv4_address_bykx;
 	private String ipv4_address_ofcallee;
@@ -378,7 +378,7 @@ public class MessageFields {
 	/**
 	 * @return the hashMD5
 	 */
-	public String getHashMD5() {
+	public byte[] getHashMD5() {
 		return hashMD5;
 	}
 
@@ -386,7 +386,7 @@ public class MessageFields {
 	 * @param hashMD5
 	 *            the hashMD5 to set
 	 */
-	public void setHashMD5(String hashMD5) {
+	public void setHashMD5(byte[] hashMD5) {
 		this.hashMD5 = hashMD5;
 	}
 

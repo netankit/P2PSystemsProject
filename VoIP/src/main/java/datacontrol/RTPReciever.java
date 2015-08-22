@@ -1,11 +1,18 @@
 package datacontrol;
 
+import java.util.HashMap;
 import java.util.concurrent.*;
 import java.net.*;
+
 import org.apache.commons.logging.Log;
+
+import crypto.MD5Hash;
 import ui.ClientUI;
+import voip.VOIP;
 import jlibrtp.*;
 import logger.LogSetup;
+import messages.Message;
+import messages.MessagePacket;
 
 /**
  * Receives data from a RTP session
@@ -27,9 +34,11 @@ public class RTPReciever  implements RTPAppIntf{
 	private BlockingQueue<AudioDataBlock> ReturnQueue;
 	// UDP port for RTP communication
 	private int RTPPort;
+	private VOIP voip;
 
-	public RTPReciever(int rtpPort, BlockingQueue<AudioDataBlock> carrierQueue, BlockingQueue<AudioDataBlock> returnQueue)
+	public RTPReciever(VOIP voip, int rtpPort, BlockingQueue<AudioDataBlock> carrierQueue, BlockingQueue<AudioDataBlock> returnQueue)
 	{		
+		this.voip = voip;
 		RTPPort = rtpPort;
 		int rtcpPort = RTPPort + 1; // port for RTCP communication is always the next one  
 		CarrierQueue = carrierQueue;
@@ -63,7 +72,11 @@ public class RTPReciever  implements RTPAppIntf{
 	}
 
 	public void receiveData(DataFrame frame, Participant participant) {
-		byte[] data = frame.getConcatenatedData(); // obtain the audio bytes
+		byte[] recievedPacket = frame.getConcatenatedData(); // obtain the audio bytes
+		MessagePacket packet = new MessagePacket();
+		HashMap<String, byte[]> hmap = packet.readMessagePacket(recievedPacket);
+
+		byte[] data = hmap.get("audio_data");
 		// here we have to do the block verification and etc.
 		AudioDataBlock block = null;
 		try
@@ -74,13 +87,19 @@ public class RTPReciever  implements RTPAppIntf{
 		{
 			logger.error("RTPReciever: " + e.getMessage());
 		}
-		if(data.length > block.dataBlockSize)
-			logger.error("RTPReciever: Bad audio block.");
-		else
+		
+		System.arraycopy(data, 0, block.data, 0, block.dataBlockSize); // copy the audio data
+		block.actualDataBlockSize = block.dataBlockSize;
+		
+		MD5Hash md5Hash = new MD5Hash();
+		byte[] recievedBytesHash = md5Hash.getMD5HashOfData(block.data);
+		byte[] storedBytesHash = hmap.get("hashMD5");
+		if (!md5Hash.CheckMD5HashOfData(recievedBytesHash, storedBytesHash))
 		{
-			System.arraycopy(data, 0, block.data, 0, data.length); // copy the audio data
-			block.actualDataBlockSize = data.length;
+			logger.error("RTPReciever: Voice data is corrupted");
+			return;
 		}
+		
 		try
 		{
 			CarrierQueue.put(block); // put the block into the carrier queue 

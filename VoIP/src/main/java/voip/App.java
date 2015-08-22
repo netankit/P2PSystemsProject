@@ -49,6 +49,11 @@ public class App extends ClientUI {
 			IPAddress = conf.getTUNIP();
 			portNumber = conf.getVOIPPortNumber();
 			dataPacketSize = conf.getVoiceDataPacketSize();
+			if (dataPacketSize > 1024)
+			{
+				System.out.println("Data packet size can not be greater than 1024 bytes. Please fix this issue in the config file");
+				return;
+			}
 		}
 		catch(Exception ex)
 		{
