@@ -60,7 +60,7 @@ public class VOIP {
 		int remoteStatus = Message.MessageType.MSG_VOIP_ERROR.getValue();
 		try
 		{
-			peerStatus.setTunnelIPAddressOfOtherPeer(IPAddressOfCallee);
+			peerStatus.setIPAddressOfOtherPeer(IPAddressOfCallee);
 			peerStatus.SetPseudoIdentityOfOtherPeer(psuedoIdentityOfCallee);
 			int validateResult = peerStatus.ValidatePeer(IPAddressOfCallee);
 			if (validateResult == Message.MessageType.MSG_VOIP_ERROR.getValue())

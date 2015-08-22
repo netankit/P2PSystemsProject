@@ -13,25 +13,24 @@ public class PeerAvailabilityChecker extends TimerTask {
 	
 	LogSetup lg = new LogSetup();
 	Log logger = lg.getLog(ClientUI.class.getName());
-	private VOIP voip;
+	private ConnectionStatusManager status;
 	private int ToleranceLevel = 3;
 	
-	public PeerAvailabilityChecker(VOIP voip)
+	public PeerAvailabilityChecker(ConnectionStatusManager status)
 	{
-		this.voip = voip;	
+		this.status = status;	
 	}
 	
 	public void run()
 	{
-		if(voip.getPeerStatus().getStatus() == ConnectionStatusManager.PEER_STATUS_SESSION)
+		if(status.getStatus() == ConnectionStatusManager.PEER_STATUS_SESSION)
 		{
 			try
 			{
 				Boolean isActive = false;
-				ConnectionStatusManager status = voip.getPeerStatus();
 				for (int i = 0; i < ToleranceLevel; i++)
 				{
-					int result = status.ValidatePeer(voip.getIPAddress());
+					int result = status.ValidatePeer(status.getIPAddressOfOtherPeer());
 					if (result != Message.MessageType.MSG_VOIP_ERROR.getValue())
 					{
 						isActive = true;
@@ -41,18 +40,30 @@ public class PeerAvailabilityChecker extends TimerTask {
 				
 				if (!isActive)
 				{
-					logger.error("PeerAvailabilityChecker: Peer is not available at " + voip.getIPAddress());
+					System.out.println("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
+					System.out.println("PeerAvailabilityChecker: So dropping the call. Check log file for details!");
+					logger.error("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
 					logger.error("PeerAvailabilityChecker: So dropping the call");
-					voip.StopCall();
+					status.getCallManager().ForceStopCall();
 				}
 			}
 			catch (IOException ex)
 			{
+				System.out.println("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
+				System.out.println("PeerAvailabilityChecker: So dropping the call. Check log file for details!");
 				logger.error("PeerAvailabilityChecker: " + ex.getMessage());
+				logger.error("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
+				logger.error("PeerAvailabilityChecker: So dropping the call");
+				status.getCallManager().ForceStopCall();
 			}
 			catch (Exception e)
 			{
+				System.out.println("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
+				System.out.println("PeerAvailabilityChecker: So dropping the call. Check log file for details!");
 				logger.error("PeerAvailabilityChecker: " + e.getMessage());
+				logger.error("PeerAvailabilityChecker: Peer is not available at " + status.getIPAddressOfOtherPeer());
+				logger.error("PeerAvailabilityChecker: So dropping the call");
+				status.getCallManager().ForceStopCall();
 			}
 		}
 	}

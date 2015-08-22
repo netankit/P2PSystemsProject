@@ -57,7 +57,7 @@ public class App extends ClientUI {
 		}
 
 		VOIP voip = new VOIP(portNumber, dataPacketSize, IPAddress, "");
-		Timer timer = new Timer();
+		
 		
 		do {
 			System.out
@@ -71,8 +71,6 @@ public class App extends ClientUI {
 				int result = voip.InitiateCall(pseudoidentity, "");
 				if (result == Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue())
 				{
-					// send heart beat messages after 100 Sec
-					timer.schedule(new PeerAvailabilityChecker(voip), 100000);
 					System.out.println("Call initiated with " + pseudoidentity);
 				} 
 				else if (result == Message.MessageType.MSG_VOIP_CALL_BUSY.getValue())
@@ -93,7 +91,6 @@ public class App extends ClientUI {
 						.println("Terminating the call to peer with pseodo-identity ... "
 								+ pseudoidentity);
 				voip.StopCall();
-				timer.cancel();
 				System.out
 				.println("Call terminated with pseodo-identity ... "
 						+ pseudoidentity);

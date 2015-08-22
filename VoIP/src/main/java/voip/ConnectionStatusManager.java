@@ -3,11 +3,11 @@ package voip;
 import java.io.*;
 import java.net.*;
 import java.util.HashMap;
+import java.util.Timer;
 
 import org.apache.commons.logging.Log;
 
 import common.CommonFunctions;
-
 import ui.ClientUI;
 import logger.LogSetup;
 import messages.Message;
@@ -53,6 +53,11 @@ public class ConnectionStatusManager extends Thread {
 		this.ownIPAddress = ownIPAddress;
 	}
 
+	public CallManager getCallManager()
+	{
+		return callManager;	
+	}
+	
 	public void SetPseudoIdentityOfOtherPeer(String pseudoIdentityOfOtherPeer)
 	{
 		this.pseudoIdentityOfOtherPeer = pseudoIdentityOfOtherPeer;
@@ -154,6 +159,7 @@ public class ConnectionStatusManager extends Thread {
 		outputStream.close();
 		// close socket
 		s.close();
+		
 		return result;
 	}
 
@@ -198,7 +204,7 @@ public class ConnectionStatusManager extends Thread {
 		if(statusMsg ==  Message.MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue())
 		{
 			result = 1;
-			if (status == PEER_STATUS_SESSION && pseudoIdentityOfOtherPeer != psuedoIdentity)
+			if (status == PEER_STATUS_SESSION && pseudoIdentityOfOtherPeer.compareToIgnoreCase(psuedoIdentity) != 0)
 			{
 				result = Message.MessageType.MSG_VOIP_ERROR.getValue();	
 			}
@@ -258,9 +264,14 @@ public class ConnectionStatusManager extends Thread {
 		return status;
 	}
 
-	public void setTunnelIPAddressOfOtherPeer(String IPAddress)
+	public void setIPAddressOfOtherPeer(String IPAddress)
 	{
 		ipAddressOfOtherPeer = IPAddress;
+	}
+	
+	public String getIPAddressOfOtherPeer()
+	{
+		return ipAddressOfOtherPeer;
 	}
 	
 	public void setPeerStatusPort(int PeerStatusPort)
@@ -383,7 +394,7 @@ public class ConnectionStatusManager extends Thread {
 				}
 				else if(statusMsg ==  Message.MessageType.MSG_VOIP_CALL_CALL_END.getValue())
 				{
-					callManager.stopCall();
+					callManager.ForceStopCall();
 				}
 				inputStream.close();
 				outputStream.close();

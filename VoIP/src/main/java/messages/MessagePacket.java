@@ -381,7 +381,6 @@ public class MessagePacket {
 		// Ending position : 33
 		byte[] msgtype = Arrays.copyOfRange(mpacket, 16, 32);
 		String resultString = printByteArrayContents(msgtype);
-		System.out.println("MessageType: " + resultString);
 		MessageType result = castStringToMessageType(resultString);
 		return result;
 	}
