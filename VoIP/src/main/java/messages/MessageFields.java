@@ -46,7 +46,7 @@ public class MessageFields {
 	 * @param pseudo_identity_caller
 	 */
 	public MessageFields(String size, String messageType, String key, String ttl, String replication, String reserved,
-			String reserveda, String reservedb, byte[] content, String pseudo_identity, String ipv4_address,
+			String reserveda, String reservedb, String content, String pseudo_identity, String ipv4_address,
 			String ipv6_address, String pseudo_identity_callee, String num_tries, String port_number, byte[] audio_data,
 			byte[] hashMD5, String ok_byte, String ipv4_address_bykx, String ipv4_address_ofcallee,
 			String port_number_callee, String port_number_caller, String started_byte, String pseudo_identity_caller) {
@@ -118,7 +118,7 @@ public class MessageFields {
 	private String reserved;
 	private String reserveda;
 	private String reservedb;
-	private byte[] content;
+	private String content;
 	private String pseudo_identity;
 	private String ipv4_address;
 	private String ipv6_address;
@@ -258,7 +258,7 @@ public class MessageFields {
 	/**
 	 * @return the content
 	 */
-	public byte[] getContent() {
+	public String getContent() {
 		return content;
 	}
 
@@ -266,7 +266,7 @@ public class MessageFields {
 	 * @param content
 	 *            the content to set
 	 */
-	public void setContent(byte[] content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 
