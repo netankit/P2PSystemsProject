@@ -8,7 +8,6 @@ import jlibrtp.*;
 import org.apache.commons.logging.Log;
 
 import crypto.MD5Hash;
-import crypto.SessionKeyEstablishment;
 import ui.ClientUI;
 import voip.ConnectionStatusManager;
 import voip.VOIP;
