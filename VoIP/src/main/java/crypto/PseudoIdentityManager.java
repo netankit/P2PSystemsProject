@@ -9,6 +9,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 /**
+ * Manages the generation, storing / caching the pseudo-identity of the caller
+ * and the callee after each DHT_GET_REPLY.
  * 
  * @author Ankit Bahuguna
  * @email: ankit.bahuguna@cs.tum.edu

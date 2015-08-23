@@ -74,3 +74,33 @@ Hence, USER 'A' has the following Pseudo-Identities: {PseudoIdentity_A1, PseudoI
 But, has only one peer id: PeerID_A 
 
 Thus, when communicating with a peer B, the peer 'A' shares a certain public key associated with the respective pseudoidentity and his peerID which is unique.
+
+
+## Diffie-Hellman key agreement protocol
+```
+ALICE
+Pseudo Identity A... A1
+Peer ID A ........... A
+
+BOB
+Pseudo Identity B... B1
+Peer ID B ...........B
+```
+
+* Alice (the first party in the exchange) generates a Diffie-Hellman public key/private key pair.
+
+* Alice transmits the public key and the algorithm specification of the key pair to Bob (the second party in the exchange).
+
+* Bob uses the algorithm specification to generate his own public and private keys; he sends the public key to Alice.
+
+* Alice uses her private key and Bob's public key to create a secret key. In the KeyAgreement class, this requires two phases: one that uses her private key and one that uses her public key.
+
+* Bob performs the same operations with his private key and Alice's public key. Due to the properties of a Diffie-Hellman key pair, this generates the same secret key Alice generated.
+
+* Bob and Alice convert their secret keys into a DES key.
+
+* Alice uses that key to encrypt data that she sends to Bob.
+
+* Bob uses that key to decrypt data that he reads.
+
+* These last two steps, of course, are symmetric: both Bob and Alice can encrypt as well as decrypt data with the secret key. They can both send and receive data as well.
