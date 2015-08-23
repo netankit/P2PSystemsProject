@@ -3,7 +3,6 @@ package messages;
 import org.apache.commons.logging.Log;
 
 import logger.LogSetup;
-import ui.ClientUI;
 
 /**
  * DHTMessageFactory: Responsible for all DHT relevant Messages.
@@ -14,10 +13,10 @@ import ui.ClientUI;
  */
 public class DHTMessage implements Message {
 	static LogSetup lg = new LogSetup();
-	static Log logger = lg.getLog(ClientUI.class.getName());
+	static Log logger = lg.getLog(DHTMessage.class.getName());
 	private MessageFields fields;
 
-	public void SetMessageFields(MessageFields fields){
+	public void SetMessageFields(MessageFields fields) {
 		this.fields = fields;
 	}
 

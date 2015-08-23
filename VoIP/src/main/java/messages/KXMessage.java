@@ -3,7 +3,6 @@ package messages;
 import org.apache.commons.logging.Log;
 
 import logger.LogSetup;
-import ui.ClientUI;
 
 /**
  * 
@@ -15,28 +14,24 @@ import ui.ClientUI;
  */
 public class KXMessage implements Message {
 	static LogSetup lg = new LogSetup();
-	static Log logger = lg.getLog(ClientUI.class.getName());
+	static Log logger = lg.getLog(KXMessage.class.getName());
 	private MessageFields fields;
 
-	public void SetMessageFields(MessageFields fields){
+	public void SetMessageFields(MessageFields fields) {
 		this.fields = fields;
 	}
-	
+
 	public byte[] createMessage(String kxMessage) {
 		// TODO Auto-generated method stub
 		if (kxMessage == null) {
 			return null;
-		}
-		else if (kxMessage == "MSG_KX_TN_READY") {
+		} else if (kxMessage == "MSG_KX_TN_READY") {
 			return createKXMessage(MessageType.MSG_KX_TN_READY);
-		}
-		else if (kxMessage == "MSG_KX_TN_BUILD_IN") {
+		} else if (kxMessage == "MSG_KX_TN_BUILD_IN") {
 			return createKXMessage(MessageType.MSG_KX_TN_BUILD_IN);
-		}
-		else if (kxMessage == "MSG_KX_TN_BUILD_OUT") {
+		} else if (kxMessage == "MSG_KX_TN_BUILD_OUT") {
 			return createKXMessage(MessageType.MSG_KX_TN_BUILD_OUT);
-		}
-		else if (kxMessage == "MSG_KX_TN_DESTROY") {
+		} else if (kxMessage == "MSG_KX_TN_DESTROY") {
 			return createKXMessage(MessageType.MSG_KX_TN_DESTROY);
 		}
 		return null;
@@ -62,8 +57,7 @@ public class KXMessage implements Message {
 			logger.info("MSG_KX_TN_READY successfully CALLED.");
 			return mpacket.createMessagePacket(MessageType.MSG_KX_TN_READY);
 
-		}
-		else if (messageType.equals(MessageType.MSG_KX_ERROR)) {
+		} else if (messageType.equals(MessageType.MSG_KX_ERROR)) {
 			logger.info("MSG_KX_ERROR successfully CALLED.");
 			return mpacket.createMessagePacket(MessageType.MSG_KX_ERROR);
 

@@ -7,14 +7,13 @@ import javax.crypto.SecretKey;
 import org.apache.commons.logging.Log;
 
 import crypto.SessionKeyEstablish;
-import ui.ClientUI;
 import logger.LogSetup;
 import messages.Message;
 
 public class VOIP {
-	
+
 	LogSetup lg = new LogSetup();
-	Log logger = lg.getLog(ClientUI.class.getName());
+	Log logger = lg.getLog(VOIP.class.getName());
 
 	private CallManager callManager;
 	private ConnectionStatusManager peerStatus;
@@ -23,9 +22,8 @@ public class VOIP {
 	private String IPAddress;
 	private String psuedoIdentity;
 	private SecretKey key;
-	
-	public VOIP(int portNumber, int dataPacketSize, String IPAddress, String psuedoIdentity)
-	{	
+
+	public VOIP(int portNumber, int dataPacketSize, String IPAddress, String psuedoIdentity) {
 		this.dataPacketSize = 512;
 		if (dataPacketSize != 0)
 			this.dataPacketSize = dataPacketSize;
@@ -38,96 +36,74 @@ public class VOIP {
 		peerStatus = new ConnectionStatusManager(callManager, calleePortNumber, this.psuedoIdentity, this.IPAddress);
 		peerStatus.start();
 	}
-	
-	public SecretKey getSecretKey()
-	{
+
+	public SecretKey getSecretKey() {
 		return key;
 	}
-	
-	public void setSecretKey(SecretKey key)
-	{
+
+	public void setSecretKey(SecretKey key) {
 		this.key = key;
 	}
-	
-	public String getIPAddress()
-	{
+
+	public String getIPAddress() {
 		return IPAddress;
 	}
-	
-	public int getDataPacketSize()
-	{
+
+	public int getDataPacketSize() {
 		return dataPacketSize;
 	}
-	
-	public int getCalleePortNumber()
-	{
+
+	public int getCalleePortNumber() {
 		return calleePortNumber;
 	}
-	
-	public ConnectionStatusManager getPeerStatus()
-	{
+
+	public ConnectionStatusManager getPeerStatus() {
 		return peerStatus;
 	}
 
-	public int InitiateCall(String IPAddressOfCallee, String psuedoIdentityOfCallee)
-	{
+	public int InitiateCall(String IPAddressOfCallee, String psuedoIdentityOfCallee) {
 		int remoteStatus = Message.MessageType.MSG_VOIP_ERROR.getValue();
-		try
-		{
+		try {
 			peerStatus.setIPAddressOfOtherPeer(IPAddressOfCallee);
 			peerStatus.SetPseudoIdentityOfOtherPeer(psuedoIdentityOfCallee);
 			int validateResult = peerStatus.ValidatePeer(IPAddressOfCallee);
-			if (validateResult == Message.MessageType.MSG_VOIP_ERROR.getValue())
-			{
+			if (validateResult == Message.MessageType.MSG_VOIP_ERROR.getValue()) {
 				logger.info("Unable to validate the peer at " + IPAddressOfCallee);
 				return remoteStatus;
 			}
-			
+
 			remoteStatus = peerStatus.CheckStatus(IPAddressOfCallee);
-		}
-		catch(IOException ex)
-		{
+		} catch (IOException ex) {
 			logger.info("Fail to make connection to " + IPAddressOfCallee);
 			return remoteStatus;
 		}
-		
-		if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue())
-		{
+
+		if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue()) {
 			// set my Peer status to in-session
 			peerStatus.setStatus(ConnectionStatusManager.PEER_STATUS_SESSION);
 			// start the call
-			try
-			{
-				SessionKeyEstablish sessionKey = new SessionKeyEstablish(IPAddressOfCallee, peerStatus.GetPeerStatusPort());
+			try {
+				SessionKeyEstablish sessionKey = new SessionKeyEstablish(IPAddressOfCallee,
+						peerStatus.GetPeerStatusPort());
 				SecretKey key = sessionKey.EstablishSessionKey();
 				this.key = key;
 				peerStatus.InformCalleeToInitiate(IPAddressOfCallee);
-			}
-			catch(IOException ex)
-			{
+			} catch (IOException ex) {
 				logger.info("Fail to initiate call to " + IPAddressOfCallee);
 				return Message.MessageType.MSG_VOIP_ERROR.getValue();
 			}
-			
+
 			callManager.startCall(IPAddressOfCallee);
-		}
-		else if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_BUSY.getValue())
-		{
+		} else if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_BUSY.getValue()) {
 			logger.info(IPAddressOfCallee + " is already in call");
-		}
-		else if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_WAITING.getValue())
-		{
+		} else if (remoteStatus == Message.MessageType.MSG_VOIP_CALL_WAITING.getValue()) {
 			logger.info(IPAddressOfCallee + " is in waiting state. Try bit later");
-		}
-		else if (remoteStatus == Message.MessageType.MSG_VOIP_ERROR.getValue())
-		{
+		} else if (remoteStatus == Message.MessageType.MSG_VOIP_ERROR.getValue()) {
 			logger.info(IPAddressOfCallee + " has some error");
-		}
-		else
-		{
+		} else {
 			logger.info(IPAddressOfCallee + " has unknown network error");
 		}
-		
+
 		return remoteStatus;
 	}
 

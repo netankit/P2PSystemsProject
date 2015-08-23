@@ -3,7 +3,6 @@ package messages;
 import org.apache.commons.logging.Log;
 
 import logger.LogSetup;
-import ui.ClientUI;
 
 /**
  * VOIPMessageFactory : Responsible for all VOIP relevant Messages.
@@ -14,7 +13,7 @@ import ui.ClientUI;
  */
 public class VOIPMessage implements Message {
 	static LogSetup lg = new LogSetup();
-	static Log logger = lg.getLog(ClientUI.class.getName());
+	static Log logger = lg.getLog(VOIPMessage.class.getName());
 	private MessageFields fields;
 
 	public Message createGenericMessage(String msg) {
@@ -134,11 +133,11 @@ public class VOIPMessage implements Message {
 			logger.info("MSG_VOIP_ERROR called");
 			return mpacket.createMessagePacket(MessageType.MSG_VOIP_ERROR);
 		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY)) {
-				logger.info("MSG_VOIP_ERROR called");
-				return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY);
+			logger.info("MSG_VOIP_ERROR called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY);
 		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
-				logger.info("MSG_VOIP_ERROR called");
-				return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY_REPLY);
+			logger.info("MSG_VOIP_ERROR called");
+			return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY_REPLY);
 		}
 
 		return null;

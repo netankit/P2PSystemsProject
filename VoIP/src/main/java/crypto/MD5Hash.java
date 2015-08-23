@@ -6,12 +6,11 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.logging.Log;
 
 import logger.LogSetup;
-import ui.ClientUI;
 
 public class MD5Hash {
 
 	LogSetup lg = new LogSetup();
-	Log logger = lg.getLog(ClientUI.class.getName());
+	Log logger = lg.getLog(MD5Hash.class.getName());
 
 	public byte[] getMD5HashOfData(byte[] data) {
 		try {

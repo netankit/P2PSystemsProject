@@ -1,9 +1,5 @@
 package ui;
 
-import org.apache.commons.logging.Log;
-
-import logger.LogSetup;
-
 /**
  *
  * ClientUI: This class implements the various basic UI functionalities of the
@@ -16,30 +12,30 @@ import logger.LogSetup;
  */
 public class ClientUI implements ClientUIInterface {
 
-	static LogSetup lg = new LogSetup();
-	static Log logger = lg.getLog(ClientUI.class.getName());
+	// static LogSetup lg = new LogSetup();
+	// static Log logger = lg.getLog(ClientUI.class.getName());
 
 	public void initiateCall() {
 		// TODO Auto-generated method stub
 		// System.out.println("Call Initiated");
-		logger.info("Call Initiated");
+		// logger.info("Call Initiated");
 
 	}
 
 	public void terminateCall() {
 		// TODO Auto-generated method stub
 		// System.out.println("Call Terminated");
-		logger.info("Call Terminated");
+		// logger.info("Call Terminated");
 	}
 
 	public void busyCall() {
 		// TODO Auto-generated method stub
-		logger.info("Call Busy");
+		// logger.info("Call Busy");
 	}
 
 	public void waitingCall() {
 		// TODO Auto-generated method stub
-		logger.info("Call Watiting");
+		// logger.info("Call Watiting");
 	}
 
 }

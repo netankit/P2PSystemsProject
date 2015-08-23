@@ -30,7 +30,6 @@ import messages.Message;
 import messages.Message.MessageType;
 import messages.MessageFactory;
 import messages.MessagePacket;
-import ui.ClientUI;
 
 /**
  * SimpleUnitTest Class has some sample tests.
@@ -40,7 +39,7 @@ import ui.ClientUI;
  */
 public class SimpleUnitTest {
 	LogSetup lg = new LogSetup();
-	Log logger = lg.getLog(ClientUI.class.getName());
+	Log logger = lg.getLog(SimpleUnitTest.class.getName());
 
 	@Test
 	public void dhtMessageTest() {

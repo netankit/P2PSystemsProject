@@ -1,55 +1,52 @@
 package datacontrol;
 
-
-import java.net.*;
-
-import jlibrtp.*;
+import java.net.DatagramSocket;
 
 import org.apache.commons.logging.Log;
 
 import crypto.MD5Hash;
-import ui.ClientUI;
-import voip.ConnectionStatusManager;
-import voip.VOIP;
+import jlibrtp.DataFrame;
+import jlibrtp.Participant;
+import jlibrtp.RTPAppIntf;
+import jlibrtp.RTPSession;
 import logger.LogSetup;
 import messages.Message;
 import messages.MessageFactory;
 import messages.MessageFields;
+import voip.ConnectionStatusManager;
+import voip.VOIP;
 
 /**
  * Sends out audio data to Sender
+ * 
  * @author Zeeshan
  *
-*/
+ */
 public class RTPSender implements RTPAppIntf {
-	
+
 	LogSetup lg = new LogSetup();
-	Log logger = lg.getLog(ClientUI.class.getName());
-	
+	Log logger = lg.getLog(RTPSender.class.getName());
+
 	private RTPSession RTPSession;
 	private int ReceiverRtpPort; // UDP port used for RTP communication
 	private VOIP voip;
 
-	public RTPSender(VOIP voip, String receiverIPAddr, int receiverRTPport)
-	{
+	public RTPSender(VOIP voip, String receiverIPAddr, int receiverRTPport) {
 		this.voip = voip;
 		ReceiverRtpPort = receiverRTPport;
 		int ReceiverRtcpPort = ReceiverRtpPort + 1;
 
 		logger.info("RTPSender: RTP port number is" + ReceiverRtpPort);
 		logger.info("RTPSender: RTCP port number is" + ReceiverRtcpPort);
-		
+
 		// create the UDP sockets for RTP and RTCP
 		DatagramSocket rtpSocket = null;
 		DatagramSocket rtcpSocket = null;
 
-		try
-		{
-			rtpSocket = new DatagramSocket();			
-			rtcpSocket = new DatagramSocket();			
-		}
-		catch(Exception e)
-		{
+		try {
+			rtpSocket = new DatagramSocket();
+			rtcpSocket = new DatagramSocket();
+		} catch (Exception e) {
 			logger.error("RTPSender: RTP session failed to obtain ports.");
 			logger.error("RTPSender: " + e.getMessage());
 			System.exit(1);
@@ -74,8 +71,7 @@ public class RTPSender implements RTPAppIntf {
 	public void userEvent(int type, Participant[] participant) {
 	}
 
-	public void sendData(byte data[])
-	{
+	public void sendData(byte data[]) {
 		MessageFields fields = new MessageFields();
 		MessageFactory msgfac = new MessageFactory();
 		ConnectionStatusManager status = voip.getPeerStatus();
@@ -95,8 +91,7 @@ public class RTPSender implements RTPAppIntf {
 		RTPSession.sendData(msg);
 	}
 
-	public void close()
-	{
+	public void close() {
 		RTPSession.endSession();
 	}
 }
