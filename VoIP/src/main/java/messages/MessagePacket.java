@@ -428,10 +428,10 @@ public class MessagePacket {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY.getValue()), 16);
-			byte[] dhspecg = getPaddedByteArray(fields.getKey(), 32);
-			byte[] dhspecp = getPaddedByteArray(fields.getKey(), 32);
-			byte[] dhspecl = getPaddedByteArray(fields.getKey(), 32);
-			byte[] dh_public_key_caller = getPaddedByteArray(fields.getKey(), 1000);
+			byte[] dhspecg = getPaddedArray(fields.getDhspecg(), 32);
+			byte[] dhspecp = getPaddedArray(fields.getDhspecp(), 32);
+			byte[] dhspecl = getPaddedArray(fields.getDhspecl(), 32);
+			byte[] dh_public_key_caller = getPaddedArray(fields.getDh_public_key_caller(), 1000);
 
 			tempList.add(size);
 			tempList.add(messageType);
@@ -448,7 +448,7 @@ public class MessagePacket {
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY_REPLY.getValue()),
 					16);
-			byte[] dh_public_key_calle = getPaddedByteArray(fields.getKey(), 1000);
+			byte[] dh_public_key_calle = getPaddedArray(fields.getDh_public_key_callee(), 1000);
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(dh_public_key_calle);
@@ -884,6 +884,14 @@ public class MessagePacket {
 		byte[] src = txt.getBytes();
 		int len = src.length;
 		int diff = size - len;
+		byte[] dest = new byte[size];
+		// System.out.println("Difference: " + diff);
+		System.arraycopy(src, 0, dest, 0, src.length);
+		return dest;
+	}
+	
+	public byte[] getPaddedArray(byte[] src, int size) {
+		int len = src.length;
 		byte[] dest = new byte[size];
 		// System.out.println("Difference: " + diff);
 		System.arraycopy(src, 0, dest, 0, src.length);

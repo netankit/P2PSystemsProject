@@ -74,4 +74,10 @@ public interface Config {
 	
 	public int getVoiceDataPacketSize();
 	public void setVoiceDataPacketSize();
+	
+	public int getKXOutReachPortNumber();
+	public void setKXOutReachPortNumber();
+	
+	public String getKXOutReachHostName();
+	public void setKXOutReachHostName();
 }

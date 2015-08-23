@@ -37,6 +37,8 @@ public class ConfigReader implements Config {
 		this.setTUNIP();
 		this.setVoiceDataPacketSize();
 		this.setVOIPPortNumber();
+		this.setKXOutReachPortNumber();
+		this.setKXOutReachHostName();
 	}
 
 	private Wini ini;
@@ -49,6 +51,8 @@ public class ConfigReader implements Config {
 	private String voipPortNumber;
 	private String voiceDataPacketSize;
 	String filename = "";
+	private String kxOutreachPortNumber;
+	private String kxOutreachHostName;
 
 	public void setiniFile(String filename) throws IOException {
 		this.ini = new Wini(new File(filename));
@@ -153,8 +157,7 @@ public class ConfigReader implements Config {
 	{
 		Ini.Section defaultSection = ini.get("KX");
 		String tunIP = defaultSection.get("TUN_IP", 0);
-		this.TUN_IP = tunIP;
-		
+		this.TUN_IP = tunIP;	
 	}
 
 	public int getVOIPPortNumber()
@@ -179,5 +182,28 @@ public class ConfigReader implements Config {
 		Ini.Section defaultSection = ini.get("VOIP");
 		String voiceDataPacketSize = defaultSection.get("VoiceDataPacketSize", 0);
 		this.voiceDataPacketSize = voiceDataPacketSize;
+	}
+	
+	public int getKXOutReachPortNumber()
+	{
+		return Integer.parseInt(kxOutreachPortNumber);
+	}
+	
+	public void setKXOutReachPortNumber()
+	{
+		Ini.Section defaultSection = ini.get("KX");
+		String kxOutreachPortNumber = defaultSection.get("OUTREACH_PORT", 0);
+		this.kxOutreachPortNumber = kxOutreachPortNumber;
+	}
+	
+	public String getKXOutReachHostName()
+	{
+		return kxOutreachHostName;
+	}
+	public void setKXOutReachHostName()
+	{
+		Ini.Section defaultSection = ini.get("KX");
+		String kxOutreachHostName = defaultSection.get("OUTREACH_HOSTNAME", 0);
+		this.kxOutreachHostName = kxOutreachHostName;
 	}
 }

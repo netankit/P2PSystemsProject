@@ -6,6 +6,7 @@ package crypto;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -21,9 +22,9 @@ public class PseudoIdentityManager {
 	// cachedMap: Its the universal map which stores <PseudoIdentity,
 	// PublicKey>
 	// of the Caller(own) and other calle (other) peers.
-	HashMap<byte[], byte[]> cachedMapOthers = new HashMap<byte[], byte[]>();
-	HashMap<byte[], byte[]> cachedMapOwn = new HashMap<byte[], byte[]>();
-
+	public HashMap<byte[], byte[]> cachedMapOthers = new HashMap<byte[], byte[]>();
+	public HashMap<byte[], KeyPair> cachedMapOwn = new HashMap<byte[], KeyPair>();
+	public ArrayList<byte[]> psuedoIdentityArr = new ArrayList<byte[]>();
 	/**
 	 * @param cachedMapOthers
 	 * @param cachedMapOwn
@@ -37,9 +38,10 @@ public class PseudoIdentityManager {
 				kpg.initialize(2048);
 				KeyPair kp = kpg.generateKeyPair();
 
-				byte[] publicKey = kp.getPublic().toString().getBytes();
+				byte[] publicKey = kp.getPublic().getEncoded();
 				byte[] pseudoIdentity = shahash.getSHA256HashOfData(publicKey);
-				this.cachedMapOwn.put(pseudoIdentity, publicKey);
+				this.cachedMapOwn.put(pseudoIdentity, kp);
+				this.psuedoIdentityArr.add(pseudoIdentity);
 				// System.out.println(pseudoIdentity);
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block

@@ -2,8 +2,11 @@ package voip;
 
 import java.io.IOException;
 
+import javax.crypto.SecretKey;
+
 import org.apache.commons.logging.Log;
 
+import crypto.SessionKeyEstablish;
 import ui.ClientUI;
 import logger.LogSetup;
 import messages.Message;
@@ -19,6 +22,7 @@ public class VOIP {
 	private int dataPacketSize;
 	private String IPAddress;
 	private String psuedoIdentity;
+	private SecretKey key;
 	
 	public VOIP(int portNumber, int dataPacketSize, String IPAddress, String psuedoIdentity)
 	{	
@@ -33,6 +37,16 @@ public class VOIP {
 		callManager = new CallManager(this);
 		peerStatus = new ConnectionStatusManager(callManager, calleePortNumber, this.psuedoIdentity, this.IPAddress);
 		peerStatus.start();
+	}
+	
+	public SecretKey getSecretKey()
+	{
+		return key;
+	}
+	
+	public void setSecretKey(SecretKey key)
+	{
+		this.key = key;
 	}
 	
 	public String getIPAddress()
@@ -84,6 +98,9 @@ public class VOIP {
 			// start the call
 			try
 			{
+				SessionKeyEstablish sessionKey = new SessionKeyEstablish(IPAddressOfCallee, peerStatus.GetPeerStatusPort());
+				SecretKey key = sessionKey.EstablishSessionKey();
+				this.key = key;
 				peerStatus.InformCalleeToInitiate(IPAddressOfCallee);
 			}
 			catch(IOException ex)

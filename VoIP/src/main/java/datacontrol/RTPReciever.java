@@ -12,6 +12,7 @@ import voip.VOIP;
 import jlibrtp.*;
 import logger.LogSetup;
 import messages.Message;
+import messages.MessageFields;
 import messages.MessagePacket;
 
 /**
@@ -74,6 +75,9 @@ public class RTPReciever  implements RTPAppIntf{
 	public void receiveData(DataFrame frame, Participant participant) {
 		byte[] recievedPacket = frame.getConcatenatedData(); // obtain the audio bytes
 		MessagePacket packet = new MessagePacket();
+		MessageFields fields = new MessageFields();
+		fields.setDhSecretKey(this.voip.getSecretKey());
+		packet.SetMessageFields(fields);
 		HashMap<String, byte[]> hmap = packet.readMessagePacket(recievedPacket);
 
 		byte[] data = hmap.get("audio_data");

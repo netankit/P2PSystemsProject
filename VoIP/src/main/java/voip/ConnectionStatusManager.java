@@ -1,13 +1,26 @@
 package voip;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Timer;
+
+import javax.crypto.KeyAgreement;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.DHParameterSpec;
 
 import org.apache.commons.logging.Log;
 
 import common.CommonFunctions;
+import crypto.PseudoIdentityManager;
 import ui.ClientUI;
 import logger.LogSetup;
 import messages.Message;
@@ -416,6 +429,84 @@ public class ConnectionStatusManager extends Thread {
 				{
 					callManager.ForceStopCall();
 				}
+				else if (statusMsg ==  Message.MessageType.MSG_VOIP_PUBLICKEY.getValue())
+				{
+					byte[] dhspecg = hmap.get("dhspecg");
+					byte[] dhspecp = hmap.get("dhspecp");
+					byte[] dhspecl = hmap.get("dhspecl");
+					byte[] dh_public_key_caller = hmap.get("dh_public_key_caller");
+			
+					KeyPairGenerator kpg = KeyPairGenerator.getInstance("DH");
+					BigInteger bigIntdhspecp = new BigInteger(dhspecp);
+					BigInteger bigdhspecg = new BigInteger(dhspecg);
+					
+					DHParameterSpec dhSpec = new DHParameterSpec(bigIntdhspecp, bigdhspecg, CommonFunctions.ByteArrayToInt(dhspecl));
+					kpg.initialize(dhSpec);
+					KeyPair kp = kpg.generateKeyPair();
+					
+					// get keypair
+					/*PseudoIdentityManager identity = new PseudoIdentityManager();
+					byte[] psuedoIdentity = null;
+					if (!identity.psuedoIdentityArr.isEmpty())
+					{
+						psuedoIdentity = identity.psuedoIdentityArr.get(0);
+					}
+					else
+					{
+						message = msgfac.createGenericMessage("VOIP_MESSAGE");
+						fields.setMessageType("MSG_VOIP_PUBLICKEY");
+						fields.setPseudo_identity(ownPseudoIdentity);
+						message.SetMessageFields(fields);
+
+						msg = message.createMessage("MSG_VOIP_ERROR");
+						outputStream.write(msg);
+						outputStream.flush();
+					}*/
+					
+					//KeyPair keyPair = identity.cachedMapOwn.get(psuedoIdentity);
+
+					message = msgfac.createGenericMessage("VOIP_MESSAGE");
+					fields.setDh_public_key_callee(kp.getPublic().getEncoded());
+					message.SetMessageFields(fields);
+
+					msg = message.createMessage("MSG_VOIP_PUBLICKEY_REPLY");
+					outputStream.write(msg);
+					outputStream.flush();
+					
+					// Secret Generate for callee
+					// Step 5 part 1: Bob uses his private key to perform the
+					// first phase of the protocol
+					KeyAgreement ka = KeyAgreement.getInstance("DH");
+					ka.init(kp.getPrivate());
+
+					// Step 5 part 2: Bob uses Alice's public key to perform
+					// the second phase of the protocol.
+					KeyFactory kf = KeyFactory.getInstance("DH");
+					X509EncodedKeySpec x509Spec = new X509EncodedKeySpec(dh_public_key_caller);
+					PublicKey pk = kf.generatePublic(x509Spec);
+					ka.doPhase(pk, true);
+
+					// Step 5 part 3: Bob generates the secret key
+					byte secret[] = ka.generateSecret();
+
+					// Step 6: Bob generates a DES key
+					SecretKeyFactory skf = SecretKeyFactory.getInstance("DES");
+					DESKeySpec desSpec = new DESKeySpec(secret);
+					this.callManager.getVOIP().setSecretKey(skf.generateSecret(desSpec));
+				}
+				else
+				{
+					message = msgfac.createGenericMessage("VOIP_MESSAGE");
+					fields.setMessageType("MSG_VOIP_CALL_INITIATE");
+					fields.setPseudo_identity(ownPseudoIdentity);
+					message.SetMessageFields(fields);
+
+					msg = message.createMessage("MSG_VOIP_ERROR");
+					outputStream.write(msg);
+					outputStream.flush();
+				}
+				
+				
 				inputStream.close();
 				outputStream.close();
 			}

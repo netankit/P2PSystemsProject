@@ -57,7 +57,7 @@ public class KXMessages {
 			fields.setIpv4_address(exchange.getKxIPv4Address());
 			fields.setIpv6_address(exchange.getKxIPv6Address());
 			message.SetMessageFields(fields);
-	
+
 			byte[] msg = message.createMessage("MSG_KX_TN_BUILD_IN");
 			outputStream.write(msg);
 			outputStream.flush();
@@ -84,7 +84,7 @@ public class KXMessages {
 				String pseudo_identity = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity"));
 				retVal = true;
 			}
-			else if (statusMsg == Message.MessageType.MSG_DHT_ERROR.getValue())
+			else if (statusMsg == Message.MessageType.MSG_KX_ERROR.getValue())
 			{
 				logger.error("KXMessages: unable to recieve the MSG_KX_TN_READY message from the KX. ");
 			}
@@ -152,7 +152,7 @@ public class KXMessages {
 				String pseudo_identity = CommonFunctions.ByteArrayToString(hmap.get("pseudo_identity"));
 				ipAddress = CommonFunctions.ByteArrayToString(hmap.get("ipv4_address"));
 			}
-			else if (statusMsg == Message.MessageType.MSG_DHT_ERROR.getValue())
+			else if (statusMsg == Message.MessageType.MSG_KX_ERROR.getValue())
 			{
 				logger.error("KXMessages: unable to recieve the MSG_KX_TN_READY message from the KX.");
 			}

@@ -138,7 +138,44 @@ public class MessageFields {
 	private String numberOfHops;
 	private String peerIdentity;
 	private SecretKey dhSecretKey;
+	private byte[] dhspecg;
+	
+	public byte[] getDhspecg() {
+		return dhspecg;
+	}
 
+	public void setDhspecg(byte[] dhspecg) {
+		this.dhspecg = dhspecg;
+	}
+
+	public byte[] getDhspecp() {
+		return dhspecp;
+	}
+
+	public void setDhspecp(byte[] dhspecp) {
+		this.dhspecp = dhspecp;
+	}
+
+	public byte[] getDhspecl() {
+		return dhspecl;
+	}
+
+	public void setDhspecl(byte[] dhspecl) {
+		this.dhspecl = dhspecl;
+	}
+
+	public byte[] getDh_public_key_caller() {
+		return dh_public_key_caller;
+	}
+
+	public void setDh_public_key_caller(byte[] dh_public_key_caller) {
+		this.dh_public_key_caller = dh_public_key_caller;
+	}
+
+	private byte[] dhspecp;
+	private byte[] dhspecl;
+	private byte[] dh_public_key_caller;
+	private byte[] dh_public_key_callee;
 	/**
 	 * @return the size
 	 */
@@ -528,6 +565,14 @@ public class MessageFields {
 	 */
 	public void setDhSecretKey(SecretKey dhSecretKey) {
 		this.dhSecretKey = dhSecretKey;
+	}
+
+	public byte[] getDh_public_key_callee() {
+		return dh_public_key_callee;
+	}
+
+	public void setDh_public_key_callee(byte[] dh_public_key_callee) {
+		this.dh_public_key_callee = dh_public_key_callee;
 	}
 
 }

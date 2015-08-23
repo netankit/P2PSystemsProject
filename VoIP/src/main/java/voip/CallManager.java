@@ -25,6 +25,11 @@ public class CallManager {
 		audioVoiceSession = new AudioSession(voip);
 	}	
 	
+	public VOIP getVOIP()
+	{
+		return this.voip;
+	}
+	
 	public void StopCall()
 	{
 		stopCall();

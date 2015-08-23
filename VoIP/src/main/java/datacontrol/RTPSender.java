@@ -88,6 +88,7 @@ public class RTPSender implements RTPAppIntf {
 		fields.setAudio_data(data);
 		fields.setHashMD5(md5Hash.getMD5HashOfData(data));
 		fields.setPort_number(String.valueOf(status.GetPeerStatusPort()));
+		fields.setDhSecretKey(this.voip.getSecretKey());
 		message.SetMessageFields(fields);
 		byte[] msg = message.createMessage("MSG_VOIP_CALL_DATA");
 
