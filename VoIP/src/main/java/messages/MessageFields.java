@@ -134,6 +134,8 @@ public class MessageFields {
 	private String port_number_caller;
 	private String started_byte;
 	private String pseudo_identity_caller;
+	private String numberOfHops;
+	private String peerIdentity;
 
 	/**
 	 * @return the size
@@ -493,6 +495,22 @@ public class MessageFields {
 	 */
 	public void setPseudo_identity_caller(String pseudo_identity_caller) {
 		this.pseudo_identity_caller = pseudo_identity_caller;
+	}
+
+	public String getNumberOfHops() {
+		return numberOfHops;
+	}
+
+	public void setNumberOfHops(String numberOfHops) {
+		this.numberOfHops = numberOfHops;
+	}
+
+	public String getPeerIdentity() {
+		return peerIdentity;
+	}
+
+	public void setPeerIdentity(String peerIdentity) {
+		this.peerIdentity = peerIdentity;
 	}
 
 }

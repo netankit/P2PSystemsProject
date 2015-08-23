@@ -27,9 +27,17 @@ public class KXMessage implements Message {
 		if (kxMessage == null) {
 			return null;
 		}
-
 		else if (kxMessage == "MSG_KX_TN_READY") {
 			return createKXMessage(MessageType.MSG_KX_TN_READY);
+		}
+		else if (kxMessage == "MSG_KX_TN_BUILD_IN") {
+			return createKXMessage(MessageType.MSG_KX_TN_BUILD_IN);
+		}
+		else if (kxMessage == "MSG_KX_TN_BUILD_OUT") {
+			return createKXMessage(MessageType.MSG_KX_TN_BUILD_OUT);
+		}
+		else if (kxMessage == "MSG_KX_TN_DESTROY") {
+			return createKXMessage(MessageType.MSG_KX_TN_DESTROY);
 		}
 		return null;
 
@@ -53,6 +61,11 @@ public class KXMessage implements Message {
 		} else if (messageType.equals(MessageType.MSG_KX_TN_READY)) {
 			logger.info("MSG_KX_TN_READY successfully CALLED.");
 			return mpacket.createMessagePacket(MessageType.MSG_KX_TN_READY);
+
+		}
+		else if (messageType.equals(MessageType.MSG_KX_ERROR)) {
+			logger.info("MSG_KX_ERROR successfully CALLED.");
+			return mpacket.createMessagePacket(MessageType.MSG_KX_ERROR);
 
 		}
 
