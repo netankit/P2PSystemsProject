@@ -35,7 +35,7 @@ public class PseudoIdentityManager {
 			KeyPairGenerator kpg;
 			try {
 				kpg = KeyPairGenerator.getInstance("DH");
-				kpg.initialize(2048);
+				kpg.initialize(1024);
 				KeyPair kp = kpg.generateKeyPair();
 
 				byte[] publicKey = kp.getPublic().getEncoded();

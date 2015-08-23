@@ -133,6 +133,12 @@ public class VOIPMessage implements Message {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_ERROR)) {
 			logger.info("MSG_VOIP_ERROR called");
 			return mpacket.createMessagePacket(MessageType.MSG_VOIP_ERROR);
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY)) {
+				logger.info("MSG_VOIP_ERROR called");
+				return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY);
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
+				logger.info("MSG_VOIP_ERROR called");
+				return mpacket.createMessagePacket(MessageType.MSG_VOIP_PUBLICKEY_REPLY);
 		}
 
 		return null;

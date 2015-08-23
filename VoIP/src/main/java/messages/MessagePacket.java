@@ -428,9 +428,9 @@ public class MessagePacket {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY.getValue()), 16);
-			byte[] dhspecg = getPaddedArray(fields.getDhspecg(), 32);
-			byte[] dhspecp = getPaddedArray(fields.getDhspecp(), 32);
-			byte[] dhspecl = getPaddedArray(fields.getDhspecl(), 32);
+			byte[] dhspecg = getPaddedArray(fields.getDhspecg(), 256);
+			byte[] dhspecp = getPaddedArray(fields.getDhspecp(), 256);
+			byte[] dhspecl = getPaddedArray(fields.getDhspecl(), 256);
 			byte[] dh_public_key_caller = getPaddedArray(fields.getDh_public_key_caller(), 1000);
 
 			tempList.add(size);
@@ -602,7 +602,7 @@ public class MessagePacket {
 			return null;
 		MessageType msgtype = getMessagePacketType(mpacketTemp);
 
-		byte[] mpacket = null;
+		byte[] mpacket = mpacketTemp;
 		try {
 			// DECRYPT MESSAGE if it's any of the VOIP MESSAGES.
 			if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
@@ -830,10 +830,10 @@ public class MessagePacket {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
 			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
 			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
-			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 64));
-			msgMap.put("dhspecp", getMessageBytes(mpacket, 64, 96));
-			msgMap.put("dhspecl", getMessageBytes(mpacket, 96, 128));
-			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 128, 1128));
+			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 288));
+			msgMap.put("dhspecp", getMessageBytes(mpacket, 288, 544));
+			msgMap.put("dhspecl", getMessageBytes(mpacket, 544, 800));
+			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 800, 1800));
 
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
