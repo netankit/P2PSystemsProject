@@ -7,10 +7,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.logging.Log;
 import org.junit.Test;
@@ -188,7 +194,8 @@ public class SimpleUnitTest {
 	}
 
 	@Test
-	public void checkMessagePacketReadAndCreate() {
+	public void checkMessagePacketReadAndCreate() throws InvalidKeyException, NoSuchAlgorithmException,
+			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		MessagePacket mp = new MessagePacket();
 		// byte[] temp = mp.createMessagePacket(MessageType.DHT_TRACE);
 		String msgType = "DHT_MESSAGE";

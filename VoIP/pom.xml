@@ -47,7 +47,6 @@
 			<artifactId>ini4j</artifactId>
 			<version>0.5.1</version>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
