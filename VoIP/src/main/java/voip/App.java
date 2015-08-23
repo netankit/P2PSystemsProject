@@ -43,6 +43,8 @@ public class App extends ClientUI {
 		String IPAddress = "";
 		int portNumber = 14999;
 		int dataPacketSize = 512;
+		int dhtPortNumber = 0;
+		String dhtHostName = "";
 		try
 		{
 			ConfigReader conf = new ConfigReader(configurationFilePath);
@@ -54,6 +56,23 @@ public class App extends ClientUI {
 				System.out.println("Data packet size can not be greater than 1024 bytes. Please fix this issue in the config file");
 				return;
 			}
+			
+			// DHT configuration reader
+			String[] dhtPortNumbers = conf.getPort();
+			if (dhtPortNumbers.length <= 0)
+			{
+				System.out.println("No DHT port number is given in configuration file. Please fix this issue in the config file");
+				return;
+			}
+			dhtPortNumber = Integer.parseInt(dhtPortNumbers[0]);
+			String[] hostKeyNames = conf.getHostname();
+			if (hostKeyNames.length <= 0)
+			{
+				System.out.println("No DHT host name is given in configuration file. Please fix this issue in the config file");
+				return;
+			}
+			
+			dhtHostName = hostKeyNames[0];
 		}
 		catch(Exception ex)
 		{

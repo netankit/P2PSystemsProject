@@ -1,6 +1,8 @@
 package common;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class CommonFunctions {
 	
@@ -29,5 +31,20 @@ public class CommonFunctions {
 	public static String ByteArrayToString(byte[] src)
 	{
 		return new String(new BigInteger(new BigInteger(src).toString(2), 2).toByteArray()).trim();	
+	}
+	
+	public static int fromArray(byte[] payload){
+	    ByteBuffer buffer = ByteBuffer.wrap(payload);
+	    buffer.order(ByteOrder.BIG_ENDIAN);
+	    return buffer.getInt();
+	}
+	
+	public static byte[] toArray(int value)
+	{
+	    ByteBuffer buffer = ByteBuffer.allocate(4);
+	    buffer.order(ByteOrder.BIG_ENDIAN);
+	    buffer.putInt(value);
+	    buffer.flip();
+	    return buffer.array();
 	}
 }
