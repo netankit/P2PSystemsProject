@@ -470,20 +470,6 @@ public class MessagePacket {
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
-		} else if (msgtype.equals(MessageType.MSG_KX_TN_DESTROY)) {
-			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
-			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
-			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_KX_TN_DESTROY.getValue()), 16);
-			byte[] ipv4_address = getPaddedByteArray("", 32);
-			byte[] pseudo_identity = getPaddedByteArray("", 32);
-			tempList.add(size);
-			tempList.add(messageType);
-			tempList.add(ipv4_address);
-			tempList.add(pseudo_identity);
-			byte[] msg = concatenateByteArrays(tempList);
-			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
-			return msg_final;
-
 		} else if (msgtype.equals(MessageType.MSG_VOIP_ERROR)) {
 			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
