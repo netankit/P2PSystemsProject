@@ -6,8 +6,6 @@ package messages;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -40,7 +38,8 @@ import messages.Message.MessageType;
  */
 public class MessagePacket {
 	// Size of the final Message Packet = 1400 bytes
-	public static final int PACKET_SIZE = 1400;
+	public static final int UDP_PACKET_SIZE = 1400;
+	public static final int PACKET_SIZE = 64000;
 	private MessageFields fields;
 	private SecretKey dhSecretKey;
 
@@ -72,7 +71,7 @@ public class MessagePacket {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_DHT_GET.getValue()), 16);
-			byte[] key = getPaddedByteArray("AnkitKey", 32);
+			byte[] key = getPaddedByteArray(fields.getKey(), 32);
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(key);
@@ -251,7 +250,7 @@ public class MessagePacket {
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
 			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
-			byte[] size = getPaddedByteArray("64", 16);
+			byte[] size = getPaddedByteArray(String.valueOf(UDP_PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_DATA.getValue()), 16);
 			byte[] ipv4_caller = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv4_callee = getPaddedByteArray(fields.getIpv4_address_ofcallee(), 32);
@@ -280,7 +279,7 @@ public class MessagePacket {
 			// Encrypt Message Content : msg_content only and not the msg_header
 			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
 			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
-			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
+			byte[] msg_final = getPaddedByteArrayFinal(msg, UDP_PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
