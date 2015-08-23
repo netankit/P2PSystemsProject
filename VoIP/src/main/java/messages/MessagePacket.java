@@ -833,7 +833,7 @@ public class MessagePacket {
 			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 544));
 			msgMap.put("dhspecp", getMessageBytes(mpacket, 544, 1056));
 			msgMap.put("dhspecl", getMessageBytes(mpacket, 1056, 1568));
-			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 1568, 1268));
+			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 1568, 2568));
 
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
