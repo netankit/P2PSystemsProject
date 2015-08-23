@@ -422,6 +422,10 @@ public class ConnectionStatusManager extends Thread {
 					byte[] dhspecp = hmap.get("dhspecp");
 					byte[] dhspecl = hmap.get("dhspecl");
 					byte[] dh_public_key_caller = hmap.get("dh_public_key_caller");
+					//
+					// logger.info("dhspecg " + dhspecg.length);
+					// logger.info("dhspecp " + dhspecp.length);
+					// logger.info("dhspecl " + dhspecl.length);
 
 					KeyPairGenerator kpg = KeyPairGenerator.getInstance("DH");
 					BigInteger bigIntdhspecp = new BigInteger(dhspecp);

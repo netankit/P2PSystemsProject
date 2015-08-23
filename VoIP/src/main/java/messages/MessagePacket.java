@@ -428,9 +428,9 @@ public class MessagePacket {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY.getValue()), 16);
-			byte[] dhspecg = getPaddedArray(fields.getDhspecg(), 256);
-			byte[] dhspecp = getPaddedArray(fields.getDhspecp(), 256);
-			byte[] dhspecl = getPaddedArray(fields.getDhspecl(), 256);
+			byte[] dhspecg = getPaddedArray(fields.getDhspecg(), 512);
+			byte[] dhspecp = getPaddedArray(fields.getDhspecp(), 512);
+			byte[] dhspecl = getPaddedArray(fields.getDhspecl(), 512);
 			byte[] dh_public_key_caller = getPaddedArray(fields.getDh_public_key_caller(), 1000);
 
 			tempList.add(size);
@@ -830,10 +830,10 @@ public class MessagePacket {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
 			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
 			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
-			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 288));
-			msgMap.put("dhspecp", getMessageBytes(mpacket, 288, 544));
-			msgMap.put("dhspecl", getMessageBytes(mpacket, 544, 800));
-			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 800, 1800));
+			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 544));
+			msgMap.put("dhspecp", getMessageBytes(mpacket, 544, 1056));
+			msgMap.put("dhspecl", getMessageBytes(mpacket, 1056, 1568));
+			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 1568, 1268));
 
 			return msgMap;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
@@ -889,7 +889,7 @@ public class MessagePacket {
 		System.arraycopy(src, 0, dest, 0, src.length);
 		return dest;
 	}
-	
+
 	public byte[] getPaddedArray(byte[] src, int size) {
 		int len = src.length;
 		byte[] dest = new byte[size];
