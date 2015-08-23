@@ -14,6 +14,12 @@ __Team Memebers__ - Ankit Bahuguna and Muhammad Zeeshan
 * crypto : Generating the pseudo-identities of the calle.
 * logger : Setting up log.
 * datacontrol : Audio Recive and Record functionalities.
+* common: Common Functions
+* Config: Config reader
+* dht: handles dht message communication
+* test: For unit and integration tests.
+* jlibrtp: rtp library for java
+* jlibrtpdemos: rtp library for java demos
 
 
 

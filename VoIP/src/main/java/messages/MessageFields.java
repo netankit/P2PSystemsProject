@@ -3,6 +3,8 @@
  */
 package messages;
 
+import javax.crypto.SecretKey;
+
 /**
  * Getters and Setters methods for various Message Fields for various Messages
  * used in the VOIP Application. Generally used by the createMessagePacket()
@@ -14,9 +16,8 @@ package messages;
 public class MessageFields {
 
 	// default constructor
-	public MessageFields()
-	{
-		
+	public MessageFields() {
+
 	}
 
 	/**
@@ -136,6 +137,7 @@ public class MessageFields {
 	private String pseudo_identity_caller;
 	private String numberOfHops;
 	private String peerIdentity;
+	private SecretKey dhSecretKey;
 
 	/**
 	 * @return the size
@@ -511,6 +513,21 @@ public class MessageFields {
 
 	public void setPeerIdentity(String peerIdentity) {
 		this.peerIdentity = peerIdentity;
+	}
+
+	/**
+	 * @return the dhSecretKey
+	 */
+	public SecretKey getDhSecretKey() {
+		return dhSecretKey;
+	}
+
+	/**
+	 * @param dhSecretKey
+	 *            the dhSecretKey to set
+	 */
+	public void setDhSecretKey(SecretKey dhSecretKey) {
+		this.dhSecretKey = dhSecretKey;
 	}
 
 }

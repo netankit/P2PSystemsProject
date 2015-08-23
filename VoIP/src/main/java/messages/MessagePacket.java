@@ -41,22 +41,6 @@ public class MessagePacket {
 	public static final int UDP_PACKET_SIZE = 1400;
 	public static final int PACKET_SIZE = 64000;
 	private MessageFields fields;
-	private SecretKey dhSecretKey;
-
-	/**
-	 * @return the dhSecretKey
-	 */
-	public SecretKey getDhSecretKey() {
-		return dhSecretKey;
-	}
-
-	/**
-	 * @param dhSecretKey
-	 *            the dhSecretKey to set
-	 */
-	public void setDhSecretKey(SecretKey dhSecretKey) {
-		this.dhSecretKey = dhSecretKey;
-	}
 
 	public void SetMessageFields(MessageFields fields) {
 		this.fields = fields;
@@ -144,7 +128,7 @@ public class MessagePacket {
 			byte[] peer_identity = getPaddedByteArray(fields.getPeerIdentity(), 32);
 			byte[] ipv4Address = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv6Address = getPaddedByteArray(fields.getIpv6_address(), 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(numberOfHops);
@@ -170,7 +154,7 @@ public class MessagePacket {
 			byte[] peer_identity = getPaddedByteArray(fields.getPeerIdentity(), 32);
 			byte[] ipv4Address = getPaddedByteArray(fields.getIpv4_address(), 32);
 			byte[] ipv6Address = getPaddedByteArray(fields.getIpv6_address(), 16);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(numberOfHops);
@@ -189,16 +173,15 @@ public class MessagePacket {
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_KX_TN_DESTROY.getValue()), 16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
-			
+
 			tempList.add(size);
 			tempList.add(messageType);
 			tempList.add(pseudo_identity);
-			
+
 			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE.getValue()), 16);
@@ -210,8 +193,8 @@ public class MessagePacket {
 			byte[] num_tries = getPaddedByteArray(fields.getNum_tries(), 8);
 			byte[] reserved = getPaddedByteArray("", 8);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
@@ -219,16 +202,11 @@ public class MessagePacket {
 			tempList.add(num_tries);
 			tempList.add(port_number);
 			tempList.add(reserved);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_INITIATE_OK.getValue()),
@@ -240,24 +218,19 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
 			tempList.add(pseudo_identity_callee);
 			tempList.add(port_number);
 			tempList.add(reserved);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_BUSY.getValue()), 16);
@@ -268,23 +241,18 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
 			tempList.add(pseudo_identity_callee);
 			tempList.add(port_number);
 			tempList.add(reserved);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_WAITING.getValue()), 16);
@@ -295,8 +263,8 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
@@ -304,11 +272,7 @@ public class MessagePacket {
 			tempList.add(port_number);
 			tempList.add(reserved);
 
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
@@ -342,13 +306,12 @@ public class MessagePacket {
 			byte[] msg_header = concatenateByteArrays(tempHeaderList);
 			byte[] msg_content = concatenateByteArrays(tempList);
 			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
+			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, fields.getDhSecretKey());
 			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, UDP_PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_CALL_END.getValue()), 16);
@@ -359,8 +322,8 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
@@ -368,53 +331,37 @@ public class MessagePacket {
 			tempList.add(port_number);
 			tempList.add(reserved);
 
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT.getValue()), 16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(pseudo_identity);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
-
 		} else if (msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_HEART_BEAT_REPLY.getValue()),
 					16);
 			byte[] pseudo_identity = getPaddedByteArray(fields.getPseudo_identity(), 32);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(pseudo_identity);
 
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_START)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_START.getValue()), 16);
@@ -425,8 +372,8 @@ public class MessagePacket {
 			byte[] port_number = getPaddedByteArray(fields.getPort_number(), 16);
 			byte[] reserved = getPaddedByteArray("", 16);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_caller);
 			tempList.add(ipv4_callee);
 			tempList.add(pseudo_identity_caller);
@@ -434,17 +381,12 @@ public class MessagePacket {
 			tempList.add(port_number);
 			tempList.add(reserved);
 
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)) {
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_CALL_STARTED.getValue()), 16);
@@ -454,24 +396,19 @@ public class MessagePacket {
 			byte[] started_byte = getPaddedByteArray("", 1);
 			byte[] port_number_caller = getPaddedByteArray("", 16);
 			byte[] reserved = getPaddedByteArray("", 15);
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(ipv4_address_bykx);
 			tempList.add(ipv4_address_ofcallee);
 			tempList.add(pseudo_identity_caller);
 			tempList.add(started_byte);
 			tempList.add(port_number_caller);
 			tempList.add(reserved);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 
 		} else if (msgtype.equals(MessageType.MSG_VOIP_ERROR)) {
-			ArrayList<byte[]> tempHeaderList = new ArrayList<byte[]>();
 			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
 			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
 			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_ERROR.getValue()), 16);
@@ -479,16 +416,43 @@ public class MessagePacket {
 			byte[] reserved = getPaddedByteArray("", 16);
 			byte[] pseudo_identity_request = getPaddedByteArray(fields.getPseudo_identity(), 32);
 
-			tempHeaderList.add(size);
-			tempHeaderList.add(messageType);
+			tempList.add(size);
+			tempList.add(messageType);
 			tempList.add(request_type);
 			tempList.add(reserved);
 			tempList.add(pseudo_identity_request);
-			byte[] msg_header = concatenateByteArrays(tempHeaderList);
-			byte[] msg_content = concatenateByteArrays(tempList);
-			// Encrypt Message Content : msg_content only and not the msg_header
-			byte[] msg_content_encrypted = getEncryptedByteArray(msg_content, getDhSecretKey());
-			byte[] msg = concatenateTwoByteArrays(msg_header, msg_content_encrypted);
+			byte[] msg = concatenateByteArrays(tempList);
+			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
+			return msg_final;
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY)) {
+			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
+			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY.getValue()), 16);
+			byte[] dhspecg = getPaddedByteArray(fields.getKey(), 32);
+			byte[] dhspecp = getPaddedByteArray(fields.getKey(), 32);
+			byte[] dhspecl = getPaddedByteArray(fields.getKey(), 32);
+			byte[] dh_public_key_caller = getPaddedByteArray(fields.getKey(), 1000);
+
+			tempList.add(size);
+			tempList.add(messageType);
+			tempList.add(dhspecg);
+			tempList.add(dhspecp);
+			tempList.add(dhspecl);
+			tempList.add(dh_public_key_caller);
+
+			byte[] msg = concatenateByteArrays(tempList);
+			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
+			return msg_final;
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
+			ArrayList<byte[]> tempList = new ArrayList<byte[]>();
+			byte[] size = getPaddedByteArray(String.valueOf(PACKET_SIZE), 16);
+			byte[] messageType = getPaddedByteArray(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY_REPLY.getValue()),
+					16);
+			byte[] dh_public_key_calle = getPaddedByteArray(fields.getKey(), 1000);
+			tempList.add(size);
+			tempList.add(messageType);
+			tempList.add(dh_public_key_calle);
+			byte[] msg = concatenateByteArrays(tempList);
 			byte[] msg_final = getPaddedByteArrayFinal(msg, PACKET_SIZE);
 			return msg_final;
 		}
@@ -608,6 +572,14 @@ public class MessagePacket {
 			return MessageType.MSG_KX_TN_DESTROY;
 		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_ERROR.getValue()))) {
 			return MessageType.MSG_VOIP_ERROR;
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY.getValue()))) {
+			return MessageType.MSG_VOIP_PUBLICKEY;
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_VOIP_PUBLICKEY_REPLY.getValue()))) {
+			return MessageType.MSG_VOIP_PUBLICKEY_REPLY;
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_KX_TN_BUILD_IN.getValue()))) {
+			return MessageType.MSG_KX_TN_BUILD_IN;
+		} else if (str.equalsIgnoreCase(String.valueOf(MessageType.MSG_KX_TN_BUILD_OUT.getValue()))) {
+			return MessageType.MSG_KX_TN_BUILD_OUT;
 		}
 
 		return null;
@@ -626,7 +598,6 @@ public class MessagePacket {
 	 * @throws InvalidKeyException
 	 */
 	public HashMap<String, byte[]> readMessagePacket(byte[] mpacketTemp) {
-
 		if (mpacketTemp.length == 0)
 			return null;
 		MessageType msgtype = getMessagePacketType(mpacketTemp);
@@ -634,17 +605,8 @@ public class MessagePacket {
 		byte[] mpacket = null;
 		try {
 			// DECRYPT MESSAGE if it's any of the VOIP MESSAGES.
-			if (msgtype.equals(MessageType.MSG_VOIP_CALL_BUSY) || msgtype.equals(MessageType.MSG_VOIP_CALL_CALL_END)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE_OK)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_OK) || msgtype.equals(MessageType.MSG_VOIP_CALL_START)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_STARTED)
-					|| msgtype.equals(MessageType.MSG_VOIP_CALL_WAITING) || msgtype.equals(MessageType.MSG_VOIP_ERROR)
-					|| msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT)
-					|| msgtype.equals(MessageType.MSG_VOIP_HEART_BEAT_REPLY)) {
-
-				mpacket = decryptMessagePacket(mpacketTemp, getDhSecretKey());
+			if (msgtype.equals(MessageType.MSG_VOIP_CALL_DATA)) {
+				mpacket = decryptMessagePacket(mpacketTemp, fields.getDhSecretKey());
 			}
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException
 				| BadPaddingException e) {
@@ -692,7 +654,7 @@ public class MessagePacket {
 			msgMap.put("unused", getMessageBytes(mpacket, 48, 64));
 			msgMap.put("pseudo_identity", getMessageBytes(mpacket, 64, 96));
 			return msgMap;
-		}  else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
+		} else if (msgtype.equals(MessageType.MSG_VOIP_CALL_INITIATE)) {
 			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
 			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
 			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
@@ -863,6 +825,22 @@ public class MessagePacket {
 			msgMap.put("request_type", getMessageBytes(mpacket, 32, 48));
 			msgMap.put("unused", getMessageBytes(mpacket, 48, 64));
 			msgMap.put("pseudo_identity_request", getMessageBytes(mpacket, 64, 96));
+			return msgMap;
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("dhspecg", getMessageBytes(mpacket, 32, 64));
+			msgMap.put("dhspecp", getMessageBytes(mpacket, 64, 96));
+			msgMap.put("dhspecl", getMessageBytes(mpacket, 96, 128));
+			msgMap.put("dh_public_key_caller", getMessageBytes(mpacket, 128, 1128));
+
+			return msgMap;
+		} else if (msgtype.equals(MessageType.MSG_VOIP_PUBLICKEY_REPLY)) {
+			HashMap<String, byte[]> msgMap = new HashMap<String, byte[]>();
+			msgMap.put("size", getMessageBytes(mpacket, 0, 16));
+			msgMap.put("messageType", getMessageBytes(mpacket, 16, 32));
+			msgMap.put("dh_public_key_calle", getMessageBytes(mpacket, 32, 1132));
 			return msgMap;
 		}
 
